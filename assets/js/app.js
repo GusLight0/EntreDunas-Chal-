@@ -1,0 +1,1002 @@
+const CONFIG = {
+  whatsappNumber: "5598991856123",
+  baseRate: 480,
+  cleaningFee: 0,
+  maxGuests: 6,
+  longStayDiscountPercent: 0,
+  longStayDiscountNights: 7,
+  reservedDates: [],
+  blockedDates: []
+};
+
+const galleryImages = [
+  {
+    src: "assets/img/quintal%26varanda.jpeg",
+    title: "Varanda e área externa",
+    category: "Área externa",
+    alt: "Varanda e área externa arborizada da Casa Barreirinhas",
+    width: 1600,
+    height: 1200
+  },
+  {
+    src: "assets/img/quarto-arcondicionado.jpeg",
+    title: "Quarto climatizado",
+    category: "Quarto",
+    alt: "Quarto com ar-condicionado e camas na Casa Barreirinhas",
+    width: 1600,
+    height: 1200
+  },
+  {
+    src: "assets/img/sala.jpeg",
+    title: "Sala principal",
+    category: "Sala",
+    alt: "Sala principal com piso claro e porta para área externa",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/sala-jantar.jpeg",
+    title: "Sala de jantar",
+    category: "Sala",
+    alt: "Sala de jantar com mesa e cozinha de apoio",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/sala-jantar-2.jpeg",
+    title: "Ambiente de refeições",
+    category: "Sala",
+    alt: "Ambiente de refeições integrado na Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/sala-jantar-3.jpeg",
+    title: "Cozinha de apoio",
+    category: "Sala",
+    alt: "Cozinha de apoio com mesa na Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/quintal.jpeg",
+    title: "Quintal",
+    category: "Área externa",
+    alt: "Quintal amplo da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/quintal%26varanda-2.jpeg",
+    title: "Varanda coberta",
+    category: "Área externa",
+    alt: "Varanda coberta e quintal da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/entrada-porta-principal.jpeg",
+    title: "Entrada principal",
+    category: "Fachada",
+    alt: "Entrada principal murada da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/entrada-porta-principal-2.jpeg",
+    title: "Acesso da casa",
+    category: "Fachada",
+    alt: "Acesso externo da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/entrada-porta-principal-3.jpeg",
+    title: "Portão e entrada",
+    category: "Fachada",
+    alt: "Portão de entrada da Casa Barreirinhas",
+    width: 1150,
+    height: 1600
+  },
+  {
+    src: "assets/img/frente-da-casa.jpeg",
+    title: "Fachada",
+    category: "Fachada",
+    alt: "Fachada externa da Casa Barreirinhas",
+    width: 1600,
+    height: 720
+  },
+  {
+    src: "assets/img/banheiro-social.jpeg",
+    title: "Banheiro social",
+    category: "Banheiros",
+    alt: "Banheiro social da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/banheiro-social-2.jpeg",
+    title: "Banheiro completo",
+    category: "Banheiros",
+    alt: "Banheiro completo com pia e espelho",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/banheiro-quarto.jpeg",
+    title: "Banheiro do quarto",
+    category: "Banheiros",
+    alt: "Banheiro do quarto da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  }
+];
+
+const reservedDates = new Set(CONFIG.reservedDates);
+const blockedDates = new Set(CONFIG.blockedDates);
+const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const monthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" });
+const shortDateFormatter = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+const state = {
+  selectedCheckIn: "",
+  selectedCheckOut: "",
+  calendarMonth: startOfMonth(new Date()),
+  galleryFilter: "Todos",
+  lightboxImages: galleryImages,
+  lightboxIndex: 0
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupLoader();
+  setupHeader();
+  setupTheme();
+  setupReveal();
+  setupButtons();
+  setupScrollSpy();
+  setupGallery();
+  setupLightbox();
+  setupBooking();
+  setupReviews();
+  setupFaq();
+  setupFloatingActions();
+  document.getElementById("currentYear").textContent = new Date().getFullYear();
+});
+
+function setupLoader() {
+  const loader = document.getElementById("loader");
+  const hide = () => loader?.classList.add("is-hidden");
+  if (new URLSearchParams(window.location.search).has("skipLoader")) {
+    hide();
+    return;
+  }
+  window.addEventListener("load", hide, { once: true });
+  window.setTimeout(hide, 1100);
+}
+
+function setupHeader() {
+  const header = document.getElementById("siteHeader");
+  const toggle = document.querySelector(".nav__toggle");
+  const menu = document.getElementById("navMenu");
+
+  const updateHeader = () => {
+    header.classList.toggle("is-scrolled", window.scrollY > 18);
+    document.getElementById("backToTop")?.classList.toggle("is-visible", window.scrollY > 700);
+  };
+
+  updateHeader();
+  window.addEventListener("scroll", updateHeader, { passive: true });
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = header.classList.toggle("is-open");
+    document.body.classList.toggle("nav-open", isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  menu?.addEventListener("click", (event) => {
+    const link = event.target.closest("a");
+    if (!link) return;
+    header.classList.remove("is-open");
+    document.body.classList.remove("nav-open");
+    toggle?.setAttribute("aria-expanded", "false");
+  });
+}
+
+function setupTheme() {
+  const savedTheme = localStorage.getItem("casaBarreirinhasTheme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+  document.documentElement.dataset.theme = initialTheme;
+
+  document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem("casaBarreirinhasTheme", nextTheme);
+  });
+}
+
+function setupReveal() {
+  const elements = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) {
+    elements.forEach((element) => element.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.14 });
+
+  elements.forEach((element) => observer.observe(element));
+}
+
+function setupButtons() {
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest(".button, .icon-button, .filter-button");
+    if (!target) return;
+
+    const rect = target.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+    ripple.style.left = `${event.clientX - rect.left}px`;
+    ripple.style.top = `${event.clientY - rect.top}px`;
+    target.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  });
+}
+
+function setupScrollSpy() {
+  const links = [...document.querySelectorAll(".nav__menu a")];
+  const sections = [...document.querySelectorAll(".section-anchor")];
+  if (!("IntersectionObserver" in window)) return;
+
+  const visible = new Map();
+
+  const activate = () => {
+    let best = null;
+    let bestRatio = 0;
+    visible.forEach((ratio, id) => {
+      if (ratio > bestRatio) { bestRatio = ratio; best = id; }
+    });
+    links.forEach((link) => {
+      const href = link.getAttribute("href").slice(1);
+      link.classList.toggle("is-active", best !== null && (href === best || (href === "disponibilidade" && best === "reservar")));
+    });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        visible.set(entry.target.id, entry.intersectionRatio);
+      } else {
+        visible.delete(entry.target.id);
+      }
+    });
+    activate();
+  }, { rootMargin: "-10% 0px -10% 0px", threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+function setupGallery() {
+  const filterBar = document.getElementById("galleryFilters");
+  renderGallery("Todos");
+
+  filterBar?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-filter]");
+    if (!button) return;
+    state.galleryFilter = button.dataset.filter;
+    filterBar.querySelectorAll(".filter-button").forEach((filter) => filter.classList.remove("is-active"));
+    button.classList.add("is-active");
+    renderGallery(state.galleryFilter);
+  });
+}
+
+function renderGallery(filter) {
+  const grid = document.getElementById("galleryGrid");
+  if (!grid) return;
+
+  const images = filter === "Todos"
+    ? galleryImages
+    : galleryImages.filter((image) => image.category === filter);
+
+  state.lightboxImages = images;
+  grid.innerHTML = "";
+
+  images.forEach((image, index) => {
+    const item = document.createElement("article");
+    item.className = "gallery-item reveal is-visible";
+    if (index % 7 === 0) item.classList.add("gallery-item--wide");
+    if (index % 7 === 3) item.classList.add("gallery-item--tall");
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "gallery-card";
+    button.setAttribute("aria-label", `Abrir foto: ${image.title}`);
+    button.dataset.index = String(index);
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      openLightbox(index);
+    });
+
+    const img = document.createElement("img");
+    img.src = image.src;
+    img.alt = image.alt;
+    img.width = image.width;
+    img.height = image.height;
+    img.loading = index < 2 ? "eager" : "lazy";
+
+    const caption = document.createElement("span");
+    caption.className = "gallery-caption";
+    caption.innerHTML = `<strong>${escapeHTML(image.title)}</strong><span>${escapeHTML(image.category)}</span>`;
+
+    button.append(img, caption);
+    item.appendChild(button);
+    grid.appendChild(item);
+  });
+}
+
+function setupLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  const closeButtons = lightbox?.querySelectorAll("[data-lightbox-close]");
+  const prev = document.getElementById("lightboxPrev");
+  const next = document.getElementById("lightboxNext");
+  const zoom = document.getElementById("lightboxZoom");
+  const imageElement = document.getElementById("lightboxImage");
+  let touchStartX = 0;
+  let zoomScale = 1;
+  let panX = 0;
+  let panY = 0;
+  let dragState = null;
+
+  const clampZoom = (value, min, max) => Math.min(Math.max(value, min), max);
+
+  const resetLightboxZoom = () => {
+    zoomScale = 1;
+    panX = 0;
+    panY = 0;
+    imageElement?.style.setProperty("--zoom-scale", "1");
+    imageElement?.style.setProperty("--pan-x", "0px");
+    imageElement?.style.setProperty("--pan-y", "0px");
+    imageElement?.classList.remove("is-dragging");
+  };
+
+  const applyLightboxZoom = (scale, x = 0, y = 0) => {
+    zoomScale = scale;
+    panX = x;
+    panY = y;
+    imageElement?.style.setProperty("--zoom-scale", scale.toFixed(2));
+    imageElement?.style.setProperty("--pan-x", `${x}px`);
+    imageElement?.style.setProperty("--pan-y", `${y}px`);
+  };
+
+  const toggleZoom = () => {
+    if (!imageElement || !lightbox) return;
+
+    if (lightbox.classList.contains("is-zoomed")) {
+      lightbox.classList.remove("is-zoomed");
+      resetLightboxZoom();
+      return;
+    }
+
+    lightbox.classList.add("is-zoomed");
+    applyLightboxZoom(1.85);
+  };
+
+  closeButtons?.forEach((button) => button.addEventListener("click", closeLightbox));
+  prev?.addEventListener("click", () => moveLightbox(-1));
+  next?.addEventListener("click", () => moveLightbox(1));
+  zoom?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleZoom();
+  });
+
+  imageElement?.addEventListener("click", (event) => {
+    if (!lightbox || lightbox.classList.contains("is-zoomed")) return;
+    event.preventDefault();
+    toggleZoom();
+  });
+
+  imageElement?.addEventListener("dblclick", (event) => {
+    event.preventDefault();
+    toggleZoom();
+  });
+
+  lightbox?.addEventListener("wheel", (event) => {
+    if (!lightbox.classList.contains("is-zoomed")) {
+      lightbox.classList.add("is-zoomed");
+    }
+
+    event.preventDefault();
+    const delta = event.deltaY < 0 ? 0.15 : -0.15;
+    const nextScale = clampZoom(zoomScale + delta, 1, 2.6);
+
+    if (nextScale <= 1) {
+      lightbox.classList.remove("is-zoomed");
+      resetLightboxZoom();
+      return;
+    }
+
+    applyLightboxZoom(nextScale, panX, panY);
+  }, { passive: false });
+
+  imageElement?.addEventListener("pointerdown", (event) => {
+    if (!lightbox?.classList.contains("is-zoomed") || zoomScale <= 1) return;
+
+    dragState = {
+      startX: event.clientX,
+      startY: event.clientY,
+      startPanX: panX,
+      startPanY: panY
+    };
+    imageElement.classList.add("is-dragging");
+    imageElement.setPointerCapture(event.pointerId);
+  });
+
+  imageElement?.addEventListener("pointermove", (event) => {
+    if (!dragState) return;
+
+    const nextPanX = clampZoom(dragState.startPanX + (event.clientX - dragState.startX), -180, 180);
+    const nextPanY = clampZoom(dragState.startPanY + (event.clientY - dragState.startY), -140, 140);
+    applyLightboxZoom(zoomScale, nextPanX, nextPanY);
+  });
+
+  const stopDragging = () => {
+    dragState = null;
+    imageElement?.classList.remove("is-dragging");
+  };
+
+  imageElement?.addEventListener("pointerup", stopDragging);
+  imageElement?.addEventListener("pointerleave", stopDragging);
+  imageElement?.addEventListener("pointercancel", stopDragging);
+
+  lightbox?.addEventListener("touchstart", (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  lightbox?.addEventListener("touchend", (event) => {
+    const distance = event.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(distance) < 42) return;
+    moveLightbox(distance > 0 ? -1 : 1);
+  }, { passive: true });
+
+  document.addEventListener("keydown", (event) => {
+    if (lightbox?.hasAttribute("hidden")) return;
+    if (event.key === "Escape") closeLightbox();
+    if (event.key === "ArrowLeft") moveLightbox(-1);
+    if (event.key === "ArrowRight") moveLightbox(1);
+  });
+}
+
+function openLightbox(index) {
+  const safeIndex = Number.isInteger(index) ? index : 0;
+  state.lightboxIndex = safeIndex;
+  const lightbox = document.getElementById("lightbox");
+  const imageElement = document.getElementById("lightboxImage");
+  lightbox.hidden = false;
+  lightbox.classList.remove("is-zoomed");
+  imageElement?.classList.remove("is-dragging");
+  imageElement?.style.setProperty("--zoom-scale", "1");
+  imageElement?.style.setProperty("--pan-x", "0px");
+  imageElement?.style.setProperty("--pan-y", "0px");
+  document.body.style.overflow = "hidden";
+  updateLightbox();
+  document.querySelector(".lightbox__close")?.focus();
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  const imageElement = document.getElementById("lightboxImage");
+  lightbox.classList.remove("is-zoomed");
+  imageElement?.classList.remove("is-dragging");
+  imageElement?.style.setProperty("--zoom-scale", "1");
+  imageElement?.style.setProperty("--pan-x", "0px");
+  imageElement?.style.setProperty("--pan-y", "0px");
+  lightbox.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function moveLightbox(direction) {
+  const length = state.lightboxImages.length;
+  state.lightboxIndex = (state.lightboxIndex + direction + length) % length;
+  document.getElementById("lightbox")?.classList.remove("is-zoomed");
+  const imageElement = document.getElementById("lightboxImage");
+  imageElement?.classList.remove("is-dragging");
+  imageElement?.style.setProperty("--zoom-scale", "1");
+  imageElement?.style.setProperty("--pan-x", "0px");
+  imageElement?.style.setProperty("--pan-y", "0px");
+  updateLightbox();
+}
+
+function updateLightbox() {
+  const image = state.lightboxImages[state.lightboxIndex];
+  const img = document.getElementById("lightboxImage");
+  const caption = document.getElementById("lightboxCaption");
+  const counter = document.getElementById("lightboxCounter");
+  if (!image || !img || !caption || !counter) return;
+
+  img.classList.add("is-switching");
+  img.src = image.src;
+  img.alt = image.alt;
+  caption.textContent = image.title;
+  counter.textContent = `Imagem ${state.lightboxIndex + 1} de ${state.lightboxImages.length}`;
+  requestAnimationFrame(() => {
+    img.classList.remove("is-switching");
+  });
+}
+
+function setupBooking() {
+  const todayISO = toISO(startOfDay(new Date()));
+  const checkInInput = document.getElementById("checkInInput");
+  const checkOutInput = document.getElementById("checkOutInput");
+  const guestInput = document.getElementById("guestInput");
+  const form = document.getElementById("reservationForm");
+
+  checkInInput.min = todayISO;
+  checkOutInput.min = todayISO;
+  guestInput.max = CONFIG.maxGuests;
+
+  checkInInput.addEventListener("change", () => {
+    if (!isSelectable(checkInInput.value)) {
+      state.selectedCheckIn = "";
+      checkInInput.value = "";
+      setBookingStatus("Escolha uma data de entrada disponível.", "error");
+      updateBookingSummary();
+      renderCalendar();
+      return;
+    }
+
+    state.selectedCheckIn = checkInInput.value;
+    if (state.selectedCheckOut && compareISO(state.selectedCheckOut, state.selectedCheckIn) <= 0) {
+      state.selectedCheckOut = "";
+      checkOutInput.value = "";
+    }
+    checkOutInput.min = addDaysISO(state.selectedCheckIn, 1);
+    updateBookingSummary();
+    renderCalendar();
+  });
+
+  checkOutInput.addEventListener("change", () => {
+    if (!state.selectedCheckIn) {
+      setBookingStatus("Selecione a entrada antes da saída.", "error");
+      checkOutInput.value = "";
+      return;
+    }
+
+    if (!isSelectable(checkOutInput.value) || compareISO(checkOutInput.value, state.selectedCheckIn) <= 0) {
+      state.selectedCheckOut = "";
+      checkOutInput.value = "";
+      setBookingStatus("Escolha uma data de saída posterior à entrada.", "error");
+      updateBookingSummary();
+      renderCalendar();
+      return;
+    }
+
+    if (rangeHasUnavailable(state.selectedCheckIn, checkOutInput.value)) {
+      state.selectedCheckOut = "";
+      checkOutInput.value = "";
+      setBookingStatus("Há uma data indisponível dentro do período.", "error");
+      updateBookingSummary();
+      renderCalendar();
+      return;
+    }
+
+    state.selectedCheckOut = checkOutInput.value;
+    updateBookingSummary();
+    renderCalendar();
+  });
+
+  guestInput.addEventListener("input", () => {
+    const value = clamp(Number(guestInput.value || 1), 1, CONFIG.maxGuests);
+    guestInput.value = value;
+    updateBookingSummary();
+  });
+
+  document.getElementById("prevMonth").addEventListener("click", () => {
+    const currentMonth = startOfMonth(new Date());
+    const previous = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1);
+    if (previous < currentMonth) return;
+    state.calendarMonth = previous;
+    renderCalendar();
+  });
+
+  document.getElementById("nextMonth").addEventListener("click", () => {
+    state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
+
+  window.addEventListener("resize", debounce(renderCalendar, 180));
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitReservation(form);
+  });
+
+  renderCalendar();
+  updateBookingSummary();
+}
+
+function renderCalendar() {
+  const calendar = document.getElementById("calendar");
+  if (!calendar) return;
+
+  const monthCount = window.matchMedia("(min-width: 760px)").matches ? 2 : 1;
+  const months = Array.from({ length: monthCount }, (_, index) => {
+    return new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + index, 1);
+  });
+
+  document.getElementById("calendarTitle").textContent = monthCount === 1
+    ? capitalize(monthFormatter.format(months[0]))
+    : `${capitalize(monthFormatter.format(months[0]))} - ${capitalize(monthFormatter.format(months[1]))}`;
+
+  calendar.innerHTML = "";
+  months.forEach((month) => calendar.appendChild(renderMonth(month)));
+}
+
+function renderMonth(monthDate) {
+  const wrapper = document.createElement("section");
+  wrapper.className = "calendar-month";
+
+  const title = document.createElement("h4");
+  title.textContent = capitalize(monthFormatter.format(monthDate));
+
+  const grid = document.createElement("div");
+  grid.className = "calendar-grid";
+
+  weekDays.forEach((day) => {
+    const weekday = document.createElement("div");
+    weekday.className = "weekday";
+    weekday.textContent = day;
+    grid.appendChild(weekday);
+  });
+
+  const firstDayIndex = monthDate.getDay();
+  for (let i = 0; i < firstDayIndex; i += 1) {
+    const spacer = document.createElement("span");
+    spacer.className = "calendar-empty";
+    grid.appendChild(spacer);
+  }
+
+  const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+    const iso = toISO(date);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "day";
+    button.textContent = day;
+    button.dataset.date = iso;
+    button.setAttribute("aria-label", shortDateFormatter.format(date));
+
+    const unavailable = !isSelectable(iso);
+    if (reservedDates.has(iso)) button.classList.add("is-reserved");
+    if (blockedDates.has(iso)) button.classList.add("is-blocked");
+    if (isSameDay(date, new Date())) button.classList.add("is-today");
+    if (iso === state.selectedCheckIn || iso === state.selectedCheckOut) button.classList.add("is-selected");
+    if (isDateInRange(iso)) button.classList.add("is-range");
+
+    button.disabled = unavailable;
+    button.addEventListener("click", () => selectCalendarDate(iso));
+    grid.appendChild(button);
+  }
+
+  wrapper.append(title, grid);
+  return wrapper;
+}
+
+function selectCalendarDate(iso) {
+  if (!isSelectable(iso)) return;
+
+  if (!state.selectedCheckIn || state.selectedCheckOut || compareISO(iso, state.selectedCheckIn) <= 0) {
+    state.selectedCheckIn = iso;
+    state.selectedCheckOut = "";
+    setBookingStatus("Entrada selecionada. Escolha a saída.", "");
+  } else if (rangeHasUnavailable(state.selectedCheckIn, iso)) {
+    setBookingStatus("Há uma data indisponível dentro do período.", "error");
+  } else {
+    state.selectedCheckOut = iso;
+    setBookingStatus("Período selecionado. Preencha os dados para solicitar.", "success");
+  }
+
+  document.getElementById("checkInInput").value = state.selectedCheckIn;
+  document.getElementById("checkOutInput").value = state.selectedCheckOut;
+  document.getElementById("checkOutInput").min = state.selectedCheckIn ? addDaysISO(state.selectedCheckIn, 1) : toISO(new Date());
+  updateBookingSummary();
+  renderCalendar();
+}
+
+function updateBookingSummary() {
+  const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
+  const nights = getSelectedNights();
+  const subtotal = nights * CONFIG.baseRate;
+  const discount = nights >= CONFIG.longStayDiscountNights
+    ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
+    : 0;
+  const total = Math.max(0, subtotal + CONFIG.cleaningFee - discount);
+
+  document.getElementById("summaryCheckIn").textContent = state.selectedCheckIn ? formatISO(state.selectedCheckIn) : "Selecione";
+  document.getElementById("summaryCheckOut").textContent = state.selectedCheckOut ? formatISO(state.selectedCheckOut) : "Selecione";
+  document.getElementById("summaryNights").textContent = String(nights);
+  document.getElementById("summaryGuests").textContent = String(guests);
+  document.getElementById("summaryRate").textContent = money.format(CONFIG.baseRate);
+  document.getElementById("summaryCleaning").textContent = CONFIG.cleaningFee > 0 ? money.format(CONFIG.cleaningFee) : "Inclusa";
+  document.getElementById("summaryDiscount").textContent = money.format(discount);
+  document.getElementById("summaryTotal").textContent = money.format(total);
+  updateWhatsAppFloat();
+}
+
+function submitReservation(form) {
+  const status = document.getElementById("formStatus");
+  status.className = "form-status";
+
+  if (!state.selectedCheckIn || !state.selectedCheckOut || getSelectedNights() < 1) {
+    setFormStatus("Selecione entrada e saída antes de solicitar a reserva.", "error");
+    document.getElementById("disponibilidade").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+
+  if (!form.checkValidity()) {
+    setFormStatus("Complete os campos obrigatórios para continuar.", "error");
+    form.reportValidity();
+    return;
+  }
+
+  const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
+  const nights = getSelectedNights();
+  const total = getSelectedTotal();
+  const data = {
+    name: document.getElementById("nameInput").value.trim(),
+    phone: document.getElementById("phoneInput").value.trim(),
+    email: document.getElementById("emailInput").value.trim(),
+    city: document.getElementById("cityInput").value.trim(),
+    state: document.getElementById("stateInput").value.trim().toUpperCase(),
+    notes: document.getElementById("notesInput").value.trim()
+  };
+
+  const message = [
+    "Olá! Gostaria de reservar a Casa Barreirinhas.",
+    "",
+    `Nome: ${data.name}`,
+    `Telefone: ${data.phone}`,
+    `Email: ${data.email}`,
+    `Cidade/Estado: ${data.city} - ${data.state}`,
+    `Entrada: ${formatISO(state.selectedCheckIn)}`,
+    `Saída: ${formatISO(state.selectedCheckOut)}`,
+    `Número de hóspedes: ${guests}`,
+    `Quantidade de noites: ${nights}`,
+    `Valor estimado: ${money.format(total)}`,
+    `Observações: ${data.notes || "Nenhuma"}`,
+    "",
+    "Aguardo confirmação de disponibilidade e forma de pagamento."
+  ].join("\n");
+
+  window.open(getWhatsAppUrl(message), "_blank", "noopener");
+  setFormStatus("Mensagem pronta aberta no WhatsApp.", "success");
+}
+
+function updateWhatsAppFloat() {
+  const float = document.getElementById("whatsappFloat");
+  if (!float) return;
+
+  const nights = getSelectedNights();
+  const message = [
+    "Olá! Gostaria de informações sobre a Casa Barreirinhas.",
+    state.selectedCheckIn ? `Entrada: ${formatISO(state.selectedCheckIn)}` : "",
+    state.selectedCheckOut ? `Saída: ${formatISO(state.selectedCheckOut)}` : "",
+    nights ? `Noites: ${nights}` : "",
+    nights ? `Valor estimado: ${money.format(getSelectedTotal())}` : ""
+  ].filter(Boolean).join("\n");
+
+  float.href = getWhatsAppUrl(message);
+}
+
+function setupReviews() {
+  const DURATION = 5200;
+  const reviews = [...document.querySelectorAll(".review-card")];
+  const dotsContainer = document.getElementById("reviewDots");
+  if (reviews.length < 2) return;
+
+  let index = 0;
+  let timer = null;
+
+  const dots = reviews.map((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "review-dot";
+    dot.setAttribute("aria-label", `Avaliação ${i + 1}`);
+    dot.addEventListener("click", () => { goTo(i); resetTimer(); });
+    dotsContainer?.appendChild(dot);
+    return dot;
+  });
+
+  const updateDots = (active) => {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === active);
+      if (i === active) {
+        dot.style.setProperty("--review-duration", `${DURATION}ms`);
+        dot.classList.remove("is-active");
+        void dot.offsetWidth;
+        dot.classList.add("is-active");
+      }
+    });
+  };
+
+  const goTo = (next) => {
+    if (next === index) return;
+    const leaving = reviews[index];
+    leaving.classList.add("is-leaving");
+    leaving.classList.remove("is-active");
+    setTimeout(() => leaving.classList.remove("is-leaving"), 520);
+    index = next;
+    void reviews[index].offsetWidth;
+    reviews[index].classList.add("is-active");
+    updateDots(index);
+  };
+
+  const advance = () => {
+    const next = (index + 1) % reviews.length;
+    goTo(next);
+  };
+
+  const resetTimer = () => {
+    clearInterval(timer);
+    timer = setInterval(advance, DURATION);
+  };
+
+  updateDots(0);
+  void reviews[0].offsetWidth;
+  reviews[0].classList.add("is-active");
+  resetTimer();
+}
+
+function setupFaq() {
+  const accordion = document.getElementById("faqAccordion");
+  accordion?.addEventListener("toggle", (event) => {
+    if (event.target.tagName !== "DETAILS" || !event.target.open) return;
+    accordion.querySelectorAll("details").forEach((details) => {
+      if (details !== event.target) details.open = false;
+    });
+  }, true);
+}
+
+function setupFloatingActions() {
+  document.getElementById("backToTop")?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  updateWhatsAppFloat();
+}
+
+function getWhatsAppUrl(message) {
+  const encoded = encodeURIComponent(message);
+  const phone = CONFIG.whatsappNumber.replace(/\D/g, "");
+  return phone ? `https://wa.me/${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+}
+
+function setBookingStatus(message, type) {
+  const note = document.getElementById("bookingNote");
+  note.textContent = message || "Datas e valores são confirmados diretamente com o anfitrião.";
+  note.classList.toggle("is-error", type === "error");
+  note.classList.toggle("is-success", type === "success");
+}
+
+function setFormStatus(message, type) {
+  const status = document.getElementById("formStatus");
+  status.textContent = message;
+  status.className = `form-status is-${type}`;
+}
+
+function getSelectedNights() {
+  if (!state.selectedCheckIn || !state.selectedCheckOut) return 0;
+  return Math.max(0, diffDays(state.selectedCheckIn, state.selectedCheckOut));
+}
+
+function getSelectedTotal() {
+  const nights = getSelectedNights();
+  const subtotal = nights * CONFIG.baseRate;
+  const discount = nights >= CONFIG.longStayDiscountNights
+    ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
+    : 0;
+  return Math.max(0, subtotal + CONFIG.cleaningFee - discount);
+}
+
+function isSelectable(iso) {
+  if (!iso) return false;
+  const date = fromISO(iso);
+  const today = startOfDay(new Date());
+  return date >= today && !reservedDates.has(iso) && !blockedDates.has(iso);
+}
+
+function rangeHasUnavailable(startISO, endISO) {
+  let cursor = addDays(fromISO(startISO), 1);
+  const end = fromISO(endISO);
+  while (cursor <= end) {
+    if (!isSelectable(toISO(cursor))) return true;
+    cursor = addDays(cursor, 1);
+  }
+  return false;
+}
+
+function isDateInRange(iso) {
+  if (!state.selectedCheckIn || !state.selectedCheckOut) return false;
+  return compareISO(iso, state.selectedCheckIn) > 0 && compareISO(iso, state.selectedCheckOut) < 0;
+}
+
+function formatISO(iso) {
+  return shortDateFormatter.format(fromISO(iso)).replace(".", "");
+}
+
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function startOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function fromISO(iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function toISO(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function addDays(date, amount) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function addDaysISO(iso, amount) {
+  return toISO(addDays(fromISO(iso), amount));
+}
+
+function diffDays(startISO, endISO) {
+  const start = fromISO(startISO);
+  const end = fromISO(endISO);
+  return Math.round((end - start) / 86400000);
+}
+
+function compareISO(a, b) {
+  return fromISO(a) - fromISO(b);
+}
+
+function isSameDay(a, b) {
+  return toISO(a) === toISO(b);
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function capitalize(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function debounce(callback, delay) {
+  let timer;
+  return (...args) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => callback(...args), delay);
+  };
+}
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#039;"
+    };
+    return entities[character];
+  });
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Casa Barreirinhas",
+  "short_name": "Casa Barreirinhas",
+  "description": "Casa de temporada em Barreirinhas, Maranhão, próxima aos Lençóis Maranhenses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1E5631",
+  "icons": [
+    {
+      "src": "assets/img/quintal%26varanda.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

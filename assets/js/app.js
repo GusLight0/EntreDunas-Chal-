@@ -695,7 +695,7 @@ function setupBooking() {
     updateBookingSummary();
   });
 
-  document.getElementById("prevMonth").addEventListener("click", () => {
+  document.getElementById("prevMonth")?.addEventListener("click", () => {
     const currentMonth = startOfMonth(new Date());
     const previous = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1);
     if (previous < currentMonth) return;
@@ -703,12 +703,14 @@ function setupBooking() {
     renderCalendar();
   });
 
-  document.getElementById("nextMonth").addEventListener("click", () => {
+  document.getElementById("nextMonth")?.addEventListener("click", () => {
     state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1);
     renderCalendar();
   });
 
-  window.addEventListener("resize", debounce(renderCalendar, 180));
+  if (document.getElementById("calendar")) {
+    window.addEventListener("resize", debounce(renderCalendar, 180));
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

@@ -93,8 +93,21 @@
     <a class="skip-link" href="#main">Pular para o conteúdo</a>
 
     <div class="loader" id="loader" aria-hidden="true">
-      <div class="loader__brand">Casa Barreirinhas</div>
-      <div class="loader__bar"><span></span></div>
+      <div class="loader__card" role="status" aria-live="polite">
+        <div class="loader__logo-wrap">
+          <img class="loader__logo" src="assets/img/Entre-Dunas-LOGO.png" alt="" width="70" height="70">
+        </div>
+        <div class="loader__content">
+          <p class="loader__eyebrow">Bem-vindo à experiência</p>
+          <h2 class="loader__brand">Casa Barreirinhas</h2>
+          <p class="loader__text">Preparando o caminho para sua estadia...</p>
+          <div class="loader__bar" aria-hidden="true"><span></span></div>
+          <div class="loader__dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+      <button class="loader__cta" type="button" id="loaderSkip">Entrar agora</button>
     </div>
 
     <header class="site-header" id="siteHeader">

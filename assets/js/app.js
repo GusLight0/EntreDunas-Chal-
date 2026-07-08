@@ -166,13 +166,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setupLoader() {
   const loader = document.getElementById("loader");
-  const hide = () => loader?.classList.add("is-hidden");
+  const loaderButton = loader?.querySelector(".loader__cta");
+  const hide = () => {
+    if (!loader) return;
+    loader.classList.add("is-hidden");
+    loader.setAttribute("aria-hidden", "true");
+    loaderButton?.blur();
+  };
+
   if (new URLSearchParams(window.location.search).has("skipLoader")) {
     hide();
     return;
   }
-  window.addEventListener("load", hide, { once: true });
-  window.setTimeout(hide, 1100);
+
+  const revealButton = () => loaderButton?.classList.add("is-ready");
+  window.addEventListener("load", revealButton, { once: true });
+  window.setTimeout(revealButton, 900);
+  loaderButton?.addEventListener("click", hide);
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !loader?.classList.contains("is-hidden")) {
+      hide();
+    }
+  }, { once: true });
+  window.setTimeout(hide, 2200);
 }
 
 function setupHeader() {

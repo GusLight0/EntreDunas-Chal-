@@ -151,7 +151,7 @@ const state = {
 document.addEventListener("DOMContentLoaded", () => {
   setupLoader();
   setupHeader();
-  setupTheme();
+  setupHeroSlider();
   setupReveal();
   setupButtons();
   setupScrollSpy();
@@ -161,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupReviews();
   setupFaq();
   setupFloatingActions();
-  document.getElementById("currentYear").textContent = new Date().getFullYear();
+  const currentYear = document.getElementById("currentYear");
+  if (currentYear) currentYear.textContent = new Date().getFullYear();
 });
 
 function setupLoader() {
@@ -193,43 +194,92 @@ function setupLoader() {
 
 function setupHeader() {
   const header = document.getElementById("siteHeader");
-  const toggle = document.querySelector(".nav__toggle");
-  const menu = document.getElementById("navMenu");
+  const introSection = document.getElementById("inicio");
 
   const updateHeader = () => {
-    header.classList.toggle("is-scrolled", window.scrollY > 18);
+    const isPastIntro = introSection
+      ? introSection.getBoundingClientRect().bottom <= header.offsetHeight
+      : window.scrollY > 18;
+
+    header.classList.toggle("is-scrolled", isPastIntro);
     document.getElementById("backToTop")?.classList.toggle("is-visible", window.scrollY > 700);
   };
 
   updateHeader();
   window.addEventListener("scroll", updateHeader, { passive: true });
-
-  toggle?.addEventListener("click", () => {
-    const isOpen = header.classList.toggle("is-open");
-    document.body.classList.toggle("nav-open", isOpen);
-    toggle.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  menu?.addEventListener("click", (event) => {
-    const link = event.target.closest("a");
-    if (!link) return;
-    header.classList.remove("is-open");
-    document.body.classList.remove("nav-open");
-    toggle?.setAttribute("aria-expanded", "false");
-  });
+  window.addEventListener("resize", updateHeader);
 }
 
-function setupTheme() {
-  const savedTheme = localStorage.getItem("casaBarreirinhasTheme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-  document.documentElement.dataset.theme = initialTheme;
+function setupHeroSlider() {
+  const DURATION = 3000;
+  const HERO_IMAGE_LIMIT = 7;
+  const slidesContainer = document.getElementById("heroSlides");
+  const dotsContainer = document.getElementById("heroDots");
+  if (!slidesContainer || !dotsContainer) return;
 
-  document.querySelector(".theme-toggle")?.addEventListener("click", () => {
-    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = nextTheme;
-    localStorage.setItem("casaBarreirinhasTheme", nextTheme);
+  galleryImages.slice(1, HERO_IMAGE_LIMIT).forEach((image) => {
+    const img = document.createElement("img");
+    img.className = "hero__image";
+    img.src = image.src;
+    img.alt = "";
+    img.width = image.width;
+    img.height = image.height;
+    img.loading = "lazy";
+    img.decoding = "async";
+    slidesContainer.appendChild(img);
   });
+
+  const slides = [...slidesContainer.querySelectorAll(".hero__image")];
+  if (slides.length < 2) return;
+
+  let index = 0;
+  let timer = null;
+
+  const dots = slides.map((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "hero-dot";
+    dot.type = "button";
+    dot.setAttribute("aria-label", `Foto ${i + 1} do início`);
+    dot.addEventListener("click", () => {
+      goTo(i);
+      resetTimer();
+    });
+    dotsContainer.appendChild(dot);
+    return dot;
+  });
+
+  const updateDots = (active) => {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === active);
+      if (i === active) {
+        dot.style.setProperty("--hero-duration", `${DURATION}ms`);
+        dot.classList.remove("is-active");
+        void dot.offsetWidth;
+        dot.classList.add("is-active");
+      }
+    });
+  };
+
+  const goTo = (next) => {
+    if (next === index) return;
+    slides[index].classList.remove("is-active");
+    index = next;
+    void slides[index].offsetWidth;
+    slides[index].classList.add("is-active");
+    updateDots(index);
+  };
+
+  const advance = () => {
+    goTo((index + 1) % slides.length);
+  };
+
+  const resetTimer = () => {
+    clearInterval(timer);
+    timer = setInterval(advance, DURATION);
+  };
+
+  updateDots(0);
+  resetTimer();
 }
 
 function setupReveal() {
@@ -266,36 +316,28 @@ function setupButtons() {
 }
 
 function setupScrollSpy() {
-  const links = [...document.querySelectorAll(".nav__menu a")];
-  const sections = [...document.querySelectorAll(".section-anchor")];
-  if (!("IntersectionObserver" in window)) return;
+  const links = [...document.querySelectorAll(".nav__menu a, .mobile-nav__item")];
+  if (!links.length) return;
 
-  const visible = new Map();
+  const getLinkTarget = (link) => {
+    const href = link.getAttribute("href") || "";
+    if (!href.includes("#")) return null;
+    return href.split("#").pop();
+  };
 
-  const activate = () => {
-    let best = null;
-    let bestRatio = 0;
-    visible.forEach((ratio, id) => {
-      if (ratio > bestRatio) { bestRatio = ratio; best = id; }
-    });
+  const setActive = (id) => {
     links.forEach((link) => {
-      const href = link.getAttribute("href").slice(1);
-      link.classList.toggle("is-active", best !== null && (href === best || (href === "disponibilidade" && best === "reservar")));
+      const href = getLinkTarget(link);
+      link.classList.toggle("is-active", id !== null && (href === id || (href === "disponibilidade" && id === "reservar")));
     });
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        visible.set(entry.target.id, entry.intersectionRatio);
-      } else {
-        visible.delete(entry.target.id);
-      }
+  links.forEach((link) => {
+    link.addEventListener("click", () => {
+      const targetId = getLinkTarget(link);
+      if (targetId) setActive(targetId);
     });
-    activate();
-  }, { rootMargin: "-10% 0px -10% 0px", threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
-
-  sections.forEach((section) => observer.observe(section));
+  });
 }
 
 function setupGallery() {
@@ -327,7 +369,6 @@ function renderGallery(filter) {
     const item = document.createElement("article");
     item.className = "gallery-item reveal is-visible";
     if (index % 7 === 0) item.classList.add("gallery-item--wide");
-    if (index % 7 === 3) item.classList.add("gallery-item--tall");
 
     const button = document.createElement("button");
     button.type = "button";
@@ -363,6 +404,7 @@ function setupLightbox() {
   const next = document.getElementById("lightboxNext");
   const zoom = document.getElementById("lightboxZoom");
   const imageElement = document.getElementById("lightboxImage");
+  if (!lightbox || !imageElement) return;
   let touchStartX = 0;
   let zoomScale = 1;
   let panX = 0;
@@ -550,7 +592,40 @@ function setupBooking() {
   const checkInInput = document.getElementById("checkInInput");
   const checkOutInput = document.getElementById("checkOutInput");
   const guestInput = document.getElementById("guestInput");
+  const discountInput = document.getElementById("discountInput");
   const form = document.getElementById("reservationForm");
+  if (!checkInInput || !checkOutInput || !guestInput || !form) return;
+
+  const bookingSection = document.getElementById("disponibilidade");
+  const bookingChoice = document.getElementById("reservar");
+  const bookingPanel = document.getElementById("bookingPanel");
+  const openBookingPanel = document.getElementById("openBookingPanel");
+  const closeBookingPanel = document.getElementById("closeBookingPanel");
+
+  const showBookingPanel = () => {
+    if (!bookingPanel) return;
+
+    bookingPanel.hidden = false;
+    bookingChoice?.setAttribute("hidden", "");
+    bookingSection?.classList.add("is-booking-open");
+    requestAnimationFrame(() => {
+      renderCalendar();
+      bookingSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    window.setTimeout(() => checkInInput.focus({ preventScroll: true }), 420);
+  };
+
+  const hideBookingPanel = () => {
+    if (!bookingPanel) return;
+
+    bookingPanel.hidden = true;
+    bookingChoice?.removeAttribute("hidden");
+    bookingSection?.classList.remove("is-booking-open");
+    bookingSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  openBookingPanel?.addEventListener("click", showBookingPanel);
+  closeBookingPanel?.addEventListener("click", hideBookingPanel);
 
   checkInInput.min = todayISO;
   checkOutInput.min = todayISO;
@@ -609,6 +684,14 @@ function setupBooking() {
   guestInput.addEventListener("input", () => {
     const value = clamp(Number(guestInput.value || 1), 1, CONFIG.maxGuests);
     guestInput.value = value;
+    updateBookingSummary();
+  });
+
+  discountInput?.addEventListener("input", () => {
+    const maxDiscount = Math.max(0, getSelectedNights() * CONFIG.baseRate + CONFIG.cleaningFee);
+    const value = Number.parseFloat(String(discountInput.value || "0").replace(",", "."));
+    const safeValue = Number.isFinite(value) ? value : 0;
+    if (safeValue > maxDiscount) discountInput.value = String(maxDiscount);
     updateBookingSummary();
   });
 
@@ -729,9 +812,7 @@ function updateBookingSummary() {
   const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
   const nights = getSelectedNights();
   const subtotal = nights * CONFIG.baseRate;
-  const discount = nights >= CONFIG.longStayDiscountNights
-    ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
-    : 0;
+  const discount = getSelectedDiscount(subtotal, nights);
   const total = Math.max(0, subtotal + CONFIG.cleaningFee - discount);
 
   document.getElementById("summaryCheckIn").textContent = state.selectedCheckIn ? formatISO(state.selectedCheckIn) : "Selecione";
@@ -763,6 +844,8 @@ function submitReservation(form) {
 
   const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
   const nights = getSelectedNights();
+  const subtotal = nights * CONFIG.baseRate;
+  const discount = getSelectedDiscount(subtotal, nights);
   const total = getSelectedTotal();
   const data = {
     name: document.getElementById("nameInput").value.trim(),
@@ -774,7 +857,7 @@ function submitReservation(form) {
   };
 
   const message = [
-    "Olá! Gostaria de reservar a Casa Barreirinhas.",
+    "Olá! Gostaria de reservar o Entre Dunas Chalé.",
     "",
     `Nome: ${data.name}`,
     `Telefone: ${data.phone}`,
@@ -784,6 +867,7 @@ function submitReservation(form) {
     `Saída: ${formatISO(state.selectedCheckOut)}`,
     `Número de hóspedes: ${guests}`,
     `Quantidade de noites: ${nights}`,
+    `Desconto opcional: ${money.format(discount)}`,
     `Valor estimado: ${money.format(total)}`,
     `Observações: ${data.notes || "Nenhuma"}`,
     "",
@@ -912,10 +996,18 @@ function getSelectedNights() {
 function getSelectedTotal() {
   const nights = getSelectedNights();
   const subtotal = nights * CONFIG.baseRate;
-  const discount = nights >= CONFIG.longStayDiscountNights
+  const discount = getSelectedDiscount(subtotal, nights);
+  return Math.max(0, subtotal + CONFIG.cleaningFee - discount);
+}
+
+function getSelectedDiscount(subtotal, nights = getSelectedNights()) {
+  const automaticDiscount = nights >= CONFIG.longStayDiscountNights
     ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
     : 0;
-  return Math.max(0, subtotal + CONFIG.cleaningFee - discount);
+  const input = document.getElementById("discountInput");
+  const value = Number.parseFloat(String(input?.value || "0").replace(",", "."));
+  const manualDiscount = Number.isFinite(value) ? value : 0;
+  return clamp(Math.max(automaticDiscount, manualDiscount), 0, Math.max(0, subtotal + CONFIG.cleaningFee));
 }
 
 function isSelectable(iso) {

@@ -11,7 +11,7 @@ const CONFIG = {
 
 const galleryImages = [
   {
-    src: "assets/img/quintal%26varanda.jpeg",
+    src: "assets/img/quintal-varanda.jpeg",
     title: "Varanda e área externa",
     category: "Área externa",
     alt: "Varanda e área externa arborizada da Casa Barreirinhas",
@@ -67,7 +67,7 @@ const galleryImages = [
     height: 1600
   },
   {
-    src: "assets/img/quintal%26varanda-2.jpeg",
+    src: "assets/img/quintal-varanda-2.jpeg",
     title: "Varanda coberta",
     category: "Área externa",
     alt: "Varanda coberta e quintal da Casa Barreirinhas",

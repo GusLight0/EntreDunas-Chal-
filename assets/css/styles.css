@@ -1931,7 +1931,7 @@ textarea:focus {
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(11, 38, 22, 0.92), rgba(11, 38, 22, 0.68)),
-    url("../img/quintal%26varanda-2.jpeg") center / cover;
+    url("../img/quintal-varanda-2.jpeg") center / cover;
 }
 
 .final-cta__inner {

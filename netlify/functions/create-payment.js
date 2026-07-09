@@ -4,6 +4,12 @@ const { calculateTotal } = require("./_lib/pricing");
 
 const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
 
+const PAYMENT_TYPE_FILTERS = {
+  pix: ["credit_card", "debit_card", "prepaid_card", "ticket", "atm", "digital_wallet"],
+  debito: ["credit_card", "bank_transfer", "prepaid_card", "ticket", "atm", "digital_wallet"],
+  credito: ["debit_card", "bank_transfer", "prepaid_card", "ticket", "atm", "digital_wallet"]
+};
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: JSON.stringify({ error: "Method Not Allowed" }) };
@@ -16,7 +22,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "JSON inválido" }) };
   }
 
-  const { checkInISO, checkOutISO, guests, discountCode, name, phone, email } = payload;
+  const { checkInISO, checkOutISO, guests, discountCode, name, phone, email, paymentMethod } = payload;
 
   if (!checkInISO || !checkOutISO || !name || !email) {
     return { statusCode: 400, body: JSON.stringify({ error: "Dados incompletos" }) };
@@ -65,7 +71,10 @@ exports.handler = async (event) => {
         ],
         payer: { name, email },
         payment_methods: {
-          installments: 3
+          installments: 3,
+          ...(PAYMENT_TYPE_FILTERS[paymentMethod]
+            ? { excluded_payment_types: PAYMENT_TYPE_FILTERS[paymentMethod].map((id) => ({ id })) }
+            : {})
         },
         external_reference: reservationRef.id,
         notification_url: `${siteUrl}/.netlify/functions/mercadopago-webhook`,

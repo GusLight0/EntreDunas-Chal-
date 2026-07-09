@@ -102,24 +102,28 @@
             <div class="payment-main reveal">
               <div class="payment-notice">
                 <svg class="icon"><use href="#icon-lock"></use></svg>
-                <p>O pagamento acontece no ambiente seguro do <strong>Mercado Pago</strong>. Na próxima tela você escolhe entre Pix, débito ou crédito.</p>
+                <p>O pagamento acontece no ambiente seguro do <strong>Mercado Pago</strong>. Escolha abaixo como prefere pagar.</p>
               </div>
 
               <p class="payment-status" id="paymentStatus" hidden></p>
 
-              <div class="payment-methods-preview" aria-label="Formas de pagamento aceitas">
-                <span class="payment-method-badge">
-                  <svg class="icon"><use href="#icon-qr-code"></use></svg>
-                  <span>Pix</span>
-                </span>
-                <span class="payment-method-badge">
-                  <svg class="icon"><use href="#icon-credit-card"></use></svg>
-                  <span>Cartão de débito</span>
-                </span>
-                <span class="payment-method-badge">
-                  <svg class="icon"><use href="#icon-credit-card"></use></svg>
-                  <span>Cartão de crédito</span>
-                </span>
+              <div class="payment-method-select" role="radiogroup" aria-label="Forma de pagamento">
+                <p class="payment-method-select__label">Como você quer pagar?</p>
+                <div class="payment-method-options">
+                  <button class="payment-method-option" type="button" data-method="pix" aria-pressed="false">
+                    <svg class="icon"><use href="#icon-qr-code"></use></svg>
+                    <span>Pix</span>
+                  </button>
+                  <button class="payment-method-option" type="button" data-method="debito" aria-pressed="false">
+                    <svg class="icon"><use href="#icon-credit-card"></use></svg>
+                    <span>Cartão de débito</span>
+                  </button>
+                  <button class="payment-method-option" type="button" data-method="credito" aria-pressed="false">
+                    <svg class="icon"><use href="#icon-credit-card"></use></svg>
+                    <span>Cartão de crédito</span>
+                  </button>
+                </div>
+                <small class="field-hint" id="paymentMethodHint"></small>
               </div>
             </div>
 

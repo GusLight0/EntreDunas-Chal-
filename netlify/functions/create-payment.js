@@ -64,6 +64,9 @@ exports.handler = async (event) => {
           }
         ],
         payer: { name, email },
+        payment_methods: {
+          installments: 3
+        },
         external_reference: reservationRef.id,
         notification_url: `${siteUrl}/.netlify/functions/mercadopago-webhook`,
         back_urls: {

@@ -7,7 +7,7 @@
     <meta name="description" content="Finalize sua reserva no Entre Dunas Chalé: confira o resumo da estadia e escolha entre Pix, débito ou crédito.">
     <meta name="robots" content="noindex, nofollow">
     <meta name="author" content="Entre Dunas Chalé">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; frame-src https://www.google.com; connect-src 'self'; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.gstatic.com; frame-src https://www.google.com; connect-src 'self' https://*.googleapis.com; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com;">
 
     <title>Pagamento | Entre Dunas Chalé</title>
     <link rel="canonical" href="https://www.casabarreirinhas.com.br/pagamento.html">
@@ -102,89 +102,24 @@
             <div class="payment-main reveal">
               <div class="payment-notice">
                 <svg class="icon"><use href="#icon-lock"></use></svg>
-                <p>Pagamento automático via <strong>Mercado Pago</strong> chegando em breve. Por enquanto, escolha uma forma abaixo para ver como vai funcionar e confirme sua solicitação pelo WhatsApp — o anfitrião combina o pagamento com você.</p>
+                <p>O pagamento acontece no ambiente seguro do <strong>Mercado Pago</strong>. Na próxima tela você escolhe entre Pix, débito ou crédito.</p>
               </div>
 
-              <div class="payment-methods" id="paymentMethods" role="tablist" aria-label="Forma de pagamento">
-                <button class="payment-method is-active" type="button" data-method="pix">
+              <p class="payment-status" id="paymentStatus" hidden></p>
+
+              <div class="payment-methods-preview" aria-label="Formas de pagamento aceitas">
+                <span class="payment-method-badge">
                   <svg class="icon"><use href="#icon-qr-code"></use></svg>
                   <span>Pix</span>
-                </button>
-                <button class="payment-method" type="button" data-method="debit">
+                </span>
+                <span class="payment-method-badge">
                   <svg class="icon"><use href="#icon-credit-card"></use></svg>
                   <span>Cartão de débito</span>
-                </button>
-                <button class="payment-method" type="button" data-method="credit">
+                </span>
+                <span class="payment-method-badge">
                   <svg class="icon"><use href="#icon-credit-card"></use></svg>
                   <span>Cartão de crédito</span>
-                </button>
-              </div>
-
-              <div class="payment-panel" data-panel="pix">
-                <div class="payment-pix">
-                  <div class="payment-pix__qr" aria-hidden="true">
-                    <svg class="icon"><use href="#icon-qr-code"></use></svg>
-                  </div>
-                  <div class="payment-pix__details">
-                    <p class="payment-pix__label">Pix copia e cola</p>
-                    <p class="payment-pix__key" id="pixKeyText">00020126580014BR.GOV.BCB.PIX0136entredunaschale@gmail.com5204000053039865802BR5910EntreDunas6009BARREIRINHAS62070503***6304</p>
-                    <button class="button button--outline" type="button" id="copyPixKey">
-                      <svg class="icon"><use href="#icon-copy"></use></svg>
-                      <span>Copiar código</span>
-                    </button>
-                    <p class="payment-hint">Chave e QR ilustrativos — a cobrança real via Pix será ativada com a integração do Mercado Pago.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="payment-panel" data-panel="debit" hidden>
-                <div class="payment-card-form">
-                  <label class="form-full-span">
-                    <span>Número do cartão</span>
-                    <input type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" disabled>
-                  </label>
-                  <label class="form-full-span">
-                    <span>Nome impresso no cartão</span>
-                    <input type="text" placeholder="Como está no cartão" disabled>
-                  </label>
-                  <label>
-                    <span>Validade</span>
-                    <input type="text" placeholder="MM/AA" disabled>
-                  </label>
-                  <label>
-                    <span>CVV</span>
-                    <input type="text" inputmode="numeric" placeholder="000" disabled>
-                  </label>
-                </div>
-                <p class="payment-hint">Pagamento com cartão de débito será habilitado com a integração do Mercado Pago.</p>
-              </div>
-
-              <div class="payment-panel" data-panel="credit" hidden>
-                <div class="payment-card-form">
-                  <label class="form-full-span">
-                    <span>Número do cartão</span>
-                    <input type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" disabled>
-                  </label>
-                  <label class="form-full-span">
-                    <span>Nome impresso no cartão</span>
-                    <input type="text" placeholder="Como está no cartão" disabled>
-                  </label>
-                  <label>
-                    <span>Validade</span>
-                    <input type="text" placeholder="MM/AA" disabled>
-                  </label>
-                  <label>
-                    <span>CVV</span>
-                    <input type="text" inputmode="numeric" placeholder="000" disabled>
-                  </label>
-                  <label class="form-full-span">
-                    <span>Parcelas</span>
-                    <select disabled>
-                      <option>À vista</option>
-                    </select>
-                  </label>
-                </div>
-                <p class="payment-hint">Pagamento com cartão de crédito será habilitado com a integração do Mercado Pago.</p>
+                </span>
               </div>
             </div>
 
@@ -205,8 +140,12 @@
                 <span>Total estimado</span>
                 <strong id="payTotal">R$ 0</strong>
               </div>
-              <button class="button button--primary button--large" type="button" id="confirmWhatsApp">
-                <span>Confirmar pelo WhatsApp</span>
+              <button class="button button--primary button--large" type="button" id="payNow">
+                <span>Pagar agora</span>
+                <svg class="icon"><use href="#icon-lock"></use></svg>
+              </button>
+              <button class="button button--outline" type="button" id="confirmWhatsApp">
+                <span>Prefiro combinar pelo WhatsApp</span>
                 <svg class="icon"><use href="#icon-phone"></use></svg>
               </button>
               <p class="summary-note">Valores confirmados diretamente com o anfitrião antes da cobrança.</p>

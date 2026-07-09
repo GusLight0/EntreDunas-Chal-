@@ -1200,39 +1200,62 @@ function setupPaymentPage() {
 
   document.getElementById("payTotal").textContent = money.format(payload.total);
 
-  const methodButtons = [...document.querySelectorAll(".payment-method")];
-  const panels = [...document.querySelectorAll(".payment-panel")];
+  const statusParam = new URLSearchParams(window.location.search).get("status");
+  if (statusParam === "success") {
+    showPaymentStatus("Pagamento aprovado! Você vai receber a confirmação por e-mail e pelo WhatsApp em breve.", "success");
+  } else if (statusParam === "pending") {
+    showPaymentStatus("Pagamento em processamento. Assim que for aprovado, você recebe a confirmação.", "pending");
+  } else if (statusParam === "failure") {
+    showPaymentStatus("O pagamento não foi concluído. Você pode tentar novamente ou combinar pelo WhatsApp.", "error");
+  }
 
-  methodButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      methodButtons.forEach((btn) => btn.classList.remove("is-active"));
-      button.classList.add("is-active");
-      const target = button.dataset.method;
-      panels.forEach((panel) => {
-        panel.hidden = panel.dataset.panel !== target;
-      });
-    });
-  });
+  const payNowButton = document.getElementById("payNow");
+  payNowButton?.addEventListener("click", async () => {
+    const label = payNowButton.querySelector("span");
+    const originalLabel = label?.textContent;
+    payNowButton.disabled = true;
+    if (label) label.textContent = "Processando...";
 
-  const copyButton = document.getElementById("copyPixKey");
-  copyButton?.addEventListener("click", async () => {
-    const keyText = document.getElementById("pixKeyText")?.textContent.trim() || "";
     try {
-      await navigator.clipboard.writeText(keyText);
-      const label = copyButton.querySelector("span");
-      if (label) {
-        const original = label.textContent;
-        label.textContent = "Copiado!";
-        window.setTimeout(() => { label.textContent = original; }, 1800);
-      }
-    } catch {
-      /* clipboard unavailable; ignore */
+      const response = await fetch("/.netlify/functions/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          checkInISO: payload.checkInISO,
+          checkOutISO: payload.checkOutISO,
+          guests: payload.guests,
+          discountCode: payload.discountCode,
+          name: payload.name,
+          phone: payload.phone,
+          email: payload.email
+        })
+      });
+
+      if (!response.ok) throw new Error("payment request failed");
+
+      const data = await response.json();
+      if (!data.checkoutUrl) throw new Error("missing checkout url");
+
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      console.error("create-payment error:", error);
+      showPaymentStatus("Não foi possível iniciar o pagamento agora. Tente novamente ou fale pelo WhatsApp.", "error");
+      payNowButton.disabled = false;
+      if (label && originalLabel) label.textContent = originalLabel;
     }
   });
 
   document.getElementById("confirmWhatsApp")?.addEventListener("click", () => {
     window.open(getWhatsAppUrl(payload.whatsappMessage), "_blank", "noopener");
   });
+}
+
+function showPaymentStatus(message, type) {
+  const status = document.getElementById("paymentStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.className = `payment-status is-${type}`;
+  status.hidden = false;
 }
 
 function getWhatsAppUrl(message) {

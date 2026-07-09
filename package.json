@@ -1,0 +1,13 @@
+{
+  "name": "entre-dunas-chale",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Entre Dunas Chalé - site e backend de reservas/pagamento",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.2",
+    "mercadopago": "^2.2.0"
+  }
+}

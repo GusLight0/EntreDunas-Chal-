@@ -1,4 +1,5 @@
 [build]
+  command = "node scripts/stamp-cachebust.js"
   functions = "netlify/functions"
 
 [[headers]]

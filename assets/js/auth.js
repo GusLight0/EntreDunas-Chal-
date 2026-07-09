@@ -58,7 +58,7 @@ if (accountButton && authModal) {
       "auth/unauthorized-domain": "Este site ainda não está autorizado no Firebase (Authentication > Settings > Authorized domains).",
       "auth/operation-not-allowed": "Esse método de login ainda não está habilitado no Firebase (Authentication > Sign-in method)."
     };
-    return map[error?.code] || "Não foi possível concluir. Tente novamente.";
+    return map[error?.code] || `Não foi possível concluir (${error?.code || "erro desconhecido"}). Tente novamente.`;
   }
 
   function showGuestView() {

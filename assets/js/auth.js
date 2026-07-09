@@ -54,7 +54,9 @@ if (accountButton && authModal) {
       "auth/email-already-in-use": "Já existe uma conta com esse e-mail. Tente entrar.",
       "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres.",
       "auth/invalid-email": "E-mail inválido.",
-      "auth/too-many-requests": "Muitas tentativas. Tente novamente em alguns minutos."
+      "auth/too-many-requests": "Muitas tentativas. Tente novamente em alguns minutos.",
+      "auth/unauthorized-domain": "Este site ainda não está autorizado no Firebase (Authentication > Settings > Authorized domains).",
+      "auth/operation-not-allowed": "Esse método de login ainda não está habilitado no Firebase (Authentication > Sign-in method)."
     };
     return map[error?.code] || "Não foi possível concluir. Tente novamente.";
   }
@@ -136,6 +138,7 @@ if (accountButton && authModal) {
       }
     } catch (error) {
       if (error?.code === "auth/popup-closed-by-user") return;
+      console.error("Google sign-in error:", error?.code, error?.message);
       document.getElementById("loginError").textContent = authErrorMessage(error);
     }
   });

@@ -6,8 +6,56 @@ const CONFIG = {
   longStayDiscountPercent: 0,
   longStayDiscountNights: 7,
   reservedDates: [],
-  blockedDates: []
+  blockedDates: [],
+  // Starter coupon list — add/edit codes and values (R$) as needed.
+  discountCodes: {
+    BEMVINDO10: 40,
+    LENCOIS15: 60
+  }
 };
+
+// Starter dataset for the state/city selects. Maranhão has broad coverage since
+// that is where the property is; other states list the capital plus a few major
+// cities. Expand freely — this is a first pass, not an exhaustive IBGE list.
+const BRAZIL_STATES = [
+  { uf: "AC", name: "Acre", cities: ["Rio Branco", "Cruzeiro do Sul", "Sena Madureira"] },
+  { uf: "AL", name: "Alagoas", cities: ["Maceió", "Arapiraca", "Palmeira dos Índios"] },
+  { uf: "AP", name: "Amapá", cities: ["Macapá", "Santana"] },
+  { uf: "AM", name: "Amazonas", cities: ["Manaus", "Parintins", "Itacoatiara"] },
+  { uf: "BA", name: "Bahia", cities: ["Salvador", "Feira de Santana", "Ilhéus", "Porto Seguro", "Vitória da Conquista"] },
+  { uf: "CE", name: "Ceará", cities: ["Fortaleza", "Juazeiro do Norte", "Sobral", "Crato"] },
+  { uf: "DF", name: "Distrito Federal", cities: ["Brasília"] },
+  { uf: "ES", name: "Espírito Santo", cities: ["Vitória", "Vila Velha", "Serra", "Guarapari"] },
+  { uf: "GO", name: "Goiás", cities: ["Goiânia", "Anápolis", "Caldas Novas"] },
+  {
+    uf: "MA",
+    name: "Maranhão",
+    cities: [
+      "São Luís", "Barreirinhas", "Santo Amaro do Maranhão", "Paulino Neves", "Tutóia",
+      "Humberto de Campos", "Primeira Cruz", "Água Doce do Maranhão", "Urbano Santos",
+      "Chapadinha", "Buriti", "Icatu", "Axixá", "Rosário", "Bacabeira", "Morros",
+      "Cedral", "Cururupu", "Imperatriz", "Caxias", "Codó", "Timon", "Bacabal",
+      "Balsas", "Açailândia", "Santa Inês", "Pinheiro", "Pedreiras", "Coroatá"
+    ]
+  },
+  { uf: "MT", name: "Mato Grosso", cities: ["Cuiabá", "Várzea Grande", "Rondonópolis"] },
+  { uf: "MS", name: "Mato Grosso do Sul", cities: ["Campo Grande", "Dourados", "Bonito"] },
+  { uf: "MG", name: "Minas Gerais", cities: ["Belo Horizonte", "Uberlândia", "Juiz de Fora", "Contagem", "Ouro Preto"] },
+  { uf: "PA", name: "Pará", cities: ["Belém", "Ananindeua", "Santarém", "Marabá"] },
+  { uf: "PB", name: "Paraíba", cities: ["João Pessoa", "Campina Grande"] },
+  { uf: "PR", name: "Paraná", cities: ["Curitiba", "Londrina", "Maringá", "Foz do Iguaçu"] },
+  { uf: "PE", name: "Pernambuco", cities: ["Recife", "Olinda", "Caruaru", "Petrolina"] },
+  { uf: "PI", name: "Piauí", cities: ["Teresina", "Parnaíba"] },
+  { uf: "RJ", name: "Rio de Janeiro", cities: ["Rio de Janeiro", "Niterói", "Petrópolis", "Nova Iguaçu", "Angra dos Reis"] },
+  { uf: "RN", name: "Rio Grande do Norte", cities: ["Natal", "Mossoró"] },
+  { uf: "RS", name: "Rio Grande do Sul", cities: ["Porto Alegre", "Caxias do Sul", "Pelotas", "Gramado"] },
+  { uf: "RO", name: "Rondônia", cities: ["Porto Velho", "Ji-Paraná"] },
+  { uf: "RR", name: "Roraima", cities: ["Boa Vista"] },
+  { uf: "SC", name: "Santa Catarina", cities: ["Florianópolis", "Joinville", "Blumenau", "Balneário Camboriú"] },
+  { uf: "SP", name: "São Paulo", cities: ["São Paulo", "Campinas", "Santos", "Guarulhos", "Ribeirão Preto", "São José dos Campos"] },
+  { uf: "SE", name: "Sergipe", cities: ["Aracaju", "Itabaiana"] },
+  { uf: "TO", name: "Tocantins", cities: ["Palmas", "Araguaína"] }
+];
 
 const galleryImages = [
   {
@@ -152,6 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupLoader();
   setupHeader();
   setupHeroSlider();
+  setupStayCardGallery();
   setupReveal();
   setupButtons();
   setupScrollSpy();
@@ -161,6 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupReviews();
   setupFaq();
   setupFloatingActions();
+  setupPaymentPage();
   const currentYear = document.getElementById("currentYear");
   if (currentYear) currentYear.textContent = new Date().getFullYear();
 });
@@ -278,8 +328,83 @@ function setupHeroSlider() {
     timer = setInterval(advance, DURATION);
   };
 
+  const heroSection = slidesContainer.parentElement;
+  const SWIPE_THRESHOLD = 40;
+  let pointerId = null;
+  let startX = 0;
+  let startY = 0;
+  let dragging = false;
+
+  const onPointerDown = (event) => {
+    if (event.pointerType === "mouse") return;
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    dragging = true;
+  };
+
+  const onPointerMove = (event) => {
+    if (!dragging || event.pointerId !== pointerId) return;
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      event.preventDefault();
+    }
+  };
+
+  const endDrag = (event) => {
+    if (!dragging || event.pointerId !== pointerId) return;
+    dragging = false;
+    pointerId = null;
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY)) {
+      goTo(deltaX < 0 ? (index + 1) % slides.length : (index - 1 + slides.length) % slides.length);
+      resetTimer();
+    }
+  };
+
+  const cancelDrag = () => {
+    dragging = false;
+    pointerId = null;
+  };
+
+  heroSection.addEventListener("pointerdown", onPointerDown, { passive: true });
+  heroSection.addEventListener("pointermove", onPointerMove, { passive: false });
+  heroSection.addEventListener("pointerup", endDrag, { passive: true });
+  heroSection.addEventListener("pointercancel", cancelDrag, { passive: true });
+
   updateDots(0);
   resetTimer();
+}
+
+function setupStayCardGallery() {
+  const media = document.getElementById("stayCardMedia");
+  const counter = document.getElementById("stayCardCounter");
+  if (!media || !counter) return;
+
+  const slides = [...media.querySelectorAll(".stay-card__slide")];
+  const prevButton = media.querySelector(".stay-card__nav--prev");
+  const nextButton = media.querySelector(".stay-card__nav--next");
+  if (slides.length < 2 || !prevButton || !nextButton) return;
+
+  let index = 0;
+  const counterLabel = counter.querySelector(".icon").outerHTML;
+
+  const goTo = (next) => {
+    slides[index].classList.remove("is-active");
+    index = next;
+    slides[index].classList.add("is-active");
+    counter.innerHTML = `${counterLabel} ${index + 1}/${slides.length}`;
+  };
+
+  prevButton.addEventListener("click", () => {
+    goTo((index - 1 + slides.length) % slides.length);
+  });
+
+  nextButton.addEventListener("click", () => {
+    goTo((index + 1) % slides.length);
+  });
 }
 
 function setupReveal() {
@@ -601,18 +726,26 @@ function setupBooking() {
   const bookingPanel = document.getElementById("bookingPanel");
   const openBookingPanel = document.getElementById("openBookingPanel");
   const closeBookingPanel = document.getElementById("closeBookingPanel");
+  const siteHeader = document.getElementById("siteHeader");
+  let headerWasScrolled = false;
+
+  const onPanelKeydown = (event) => {
+    if (event.key === "Escape") hideBookingPanel();
+  };
 
   const showBookingPanel = () => {
     if (!bookingPanel) return;
 
     bookingPanel.hidden = false;
+    bookingPanel.scrollTop = 0;
     bookingChoice?.setAttribute("hidden", "");
     bookingSection?.classList.add("is-booking-open");
-    requestAnimationFrame(() => {
-      renderCalendar();
-      bookingSection?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-    window.setTimeout(() => checkInInput.focus({ preventScroll: true }), 420);
+    document.body.classList.add("booking-open");
+    headerWasScrolled = siteHeader?.classList.contains("is-scrolled") ?? false;
+    siteHeader?.classList.add("is-scrolled");
+    document.addEventListener("keydown", onPanelKeydown);
+    requestAnimationFrame(renderCalendar);
+    window.setTimeout(() => checkInInput.focus({ preventScroll: true }), 120);
   };
 
   const hideBookingPanel = () => {
@@ -621,7 +754,10 @@ function setupBooking() {
     bookingPanel.hidden = true;
     bookingChoice?.removeAttribute("hidden");
     bookingSection?.classList.remove("is-booking-open");
-    bookingSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.body.classList.remove("booking-open");
+    if (!headerWasScrolled) siteHeader?.classList.remove("is-scrolled");
+    document.removeEventListener("keydown", onPanelKeydown);
+    openBookingPanel?.focus({ preventScroll: true });
   };
 
   openBookingPanel?.addEventListener("click", showBookingPanel);
@@ -688,11 +824,44 @@ function setupBooking() {
   });
 
   discountInput?.addEventListener("input", () => {
-    const maxDiscount = Math.max(0, getSelectedNights() * CONFIG.baseRate + CONFIG.cleaningFee);
-    const value = Number.parseFloat(String(discountInput.value || "0").replace(",", "."));
-    const safeValue = Number.isFinite(value) ? value : 0;
-    if (safeValue > maxDiscount) discountInput.value = String(maxDiscount);
+    const cursor = discountInput.selectionStart;
+    discountInput.value = discountInput.value.toUpperCase();
+    discountInput.setSelectionRange(cursor, cursor);
+    updateDiscountHint();
     updateBookingSummary();
+  });
+
+  const phoneInput = document.getElementById("phoneInput");
+  phoneInput?.addEventListener("input", () => {
+    phoneInput.value = formatBRPhone(phoneInput.value);
+  });
+
+  const stateInput = document.getElementById("stateInput");
+  const cityInput = document.getElementById("cityInput");
+  const cityOptions = document.getElementById("cityOptions");
+
+  BRAZIL_STATES.forEach(({ uf, name }) => {
+    const option = document.createElement("option");
+    option.value = uf;
+    option.textContent = `${uf} — ${name}`;
+    stateInput?.appendChild(option);
+  });
+
+  const fillCityOptions = (cities) => {
+    if (!cityOptions) return;
+    cityOptions.innerHTML = "";
+    cities.forEach((city) => {
+      const option = document.createElement("option");
+      option.value = city;
+      cityOptions.appendChild(option);
+    });
+  };
+
+  fillCityOptions(BRAZIL_STATES.flatMap((entry) => entry.cities));
+
+  stateInput?.addEventListener("change", () => {
+    const selected = BRAZIL_STATES.find((entry) => entry.uf === stateInput.value);
+    fillCityOptions(selected ? selected.cities : BRAZIL_STATES.flatMap((entry) => entry.cities));
   });
 
   document.getElementById("prevMonth")?.addEventListener("click", () => {
@@ -848,6 +1017,7 @@ function submitReservation(form) {
   const nights = getSelectedNights();
   const subtotal = nights * CONFIG.baseRate;
   const discount = getSelectedDiscount(subtotal, nights);
+  const discountCode = getDiscountCode();
   const total = getSelectedTotal();
   const data = {
     name: document.getElementById("nameInput").value.trim(),
@@ -869,15 +1039,38 @@ function submitReservation(form) {
     `Saída: ${formatISO(state.selectedCheckOut)}`,
     `Número de hóspedes: ${guests}`,
     `Quantidade de noites: ${nights}`,
-    `Desconto opcional: ${money.format(discount)}`,
+    `Desconto: ${discount > 0 ? money.format(discount) : "Nenhum"}${discountCode && CONFIG.discountCodes[discountCode] ? ` (cupom ${discountCode})` : ""}`,
     `Valor estimado: ${money.format(total)}`,
     `Observações: ${data.notes || "Nenhuma"}`,
     "",
     "Aguardo confirmação de disponibilidade e forma de pagamento."
   ].join("\n");
 
-  window.open(getWhatsAppUrl(message), "_blank", "noopener");
-  setFormStatus("Mensagem pronta aberta no WhatsApp.", "success");
+  const payload = {
+    house: "Entre Dunas Chalé",
+    checkInISO: state.selectedCheckIn,
+    checkOutISO: state.selectedCheckOut,
+    checkIn: formatISO(state.selectedCheckIn),
+    checkOut: formatISO(state.selectedCheckOut),
+    nights,
+    guests,
+    rate: CONFIG.baseRate,
+    cleaning: CONFIG.cleaningFee,
+    discount,
+    discountCode: discount > 0 && CONFIG.discountCodes[discountCode] ? discountCode : "",
+    subtotal,
+    total,
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    city: data.city,
+    state: data.state,
+    notes: data.notes,
+    whatsappMessage: message
+  };
+
+  sessionStorage.setItem("reservationPayload", JSON.stringify(payload));
+  window.location.href = "pagamento.html";
 }
 
 function updateWhatsAppFloat() {
@@ -971,6 +1164,77 @@ function setupFloatingActions() {
   updateWhatsAppFloat();
 }
 
+function setupPaymentPage() {
+  const page = document.getElementById("paymentPage");
+  if (!page) return;
+
+  const emptyState = document.getElementById("paymentEmpty");
+  const content = document.getElementById("paymentContent");
+  const raw = sessionStorage.getItem("reservationPayload");
+  const payload = raw ? JSON.parse(raw) : null;
+
+  if (!payload) {
+    if (emptyState) emptyState.hidden = false;
+    if (content) content.hidden = true;
+    return;
+  }
+
+  if (emptyState) emptyState.hidden = true;
+  if (content) content.hidden = false;
+
+  document.getElementById("payGuestName").textContent = payload.name;
+  document.getElementById("payCheckIn").textContent = payload.checkIn;
+  document.getElementById("payCheckOut").textContent = payload.checkOut;
+  document.getElementById("payNights").textContent = String(payload.nights);
+  document.getElementById("payGuests").textContent = String(payload.guests);
+  document.getElementById("payRate").textContent = money.format(payload.rate);
+  document.getElementById("payCleaning").textContent = payload.cleaning > 0 ? money.format(payload.cleaning) : "Inclusa";
+
+  const discountRow = document.getElementById("payDiscountRow");
+  if (discountRow) {
+    discountRow.hidden = payload.discount <= 0;
+    if (payload.discount > 0) {
+      document.getElementById("payDiscount").textContent = `-${money.format(payload.discount)}${payload.discountCode ? ` (${payload.discountCode})` : ""}`;
+    }
+  }
+
+  document.getElementById("payTotal").textContent = money.format(payload.total);
+
+  const methodButtons = [...document.querySelectorAll(".payment-method")];
+  const panels = [...document.querySelectorAll(".payment-panel")];
+
+  methodButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      methodButtons.forEach((btn) => btn.classList.remove("is-active"));
+      button.classList.add("is-active");
+      const target = button.dataset.method;
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== target;
+      });
+    });
+  });
+
+  const copyButton = document.getElementById("copyPixKey");
+  copyButton?.addEventListener("click", async () => {
+    const keyText = document.getElementById("pixKeyText")?.textContent.trim() || "";
+    try {
+      await navigator.clipboard.writeText(keyText);
+      const label = copyButton.querySelector("span");
+      if (label) {
+        const original = label.textContent;
+        label.textContent = "Copiado!";
+        window.setTimeout(() => { label.textContent = original; }, 1800);
+      }
+    } catch {
+      /* clipboard unavailable; ignore */
+    }
+  });
+
+  document.getElementById("confirmWhatsApp")?.addEventListener("click", () => {
+    window.open(getWhatsAppUrl(payload.whatsappMessage), "_blank", "noopener");
+  });
+}
+
 function getWhatsAppUrl(message) {
   const encoded = encodeURIComponent(message);
   const phone = CONFIG.whatsappNumber.replace(/\D/g, "");
@@ -1006,10 +1270,48 @@ function getSelectedDiscount(subtotal, nights = getSelectedNights()) {
   const automaticDiscount = nights >= CONFIG.longStayDiscountNights
     ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
     : 0;
+  const codeDiscount = CONFIG.discountCodes[getDiscountCode()] || 0;
+  return clamp(Math.max(automaticDiscount, codeDiscount), 0, Math.max(0, subtotal + CONFIG.cleaningFee));
+}
+
+function getDiscountCode() {
   const input = document.getElementById("discountInput");
-  const value = Number.parseFloat(String(input?.value || "0").replace(",", "."));
-  const manualDiscount = Number.isFinite(value) ? value : 0;
-  return clamp(Math.max(automaticDiscount, manualDiscount), 0, Math.max(0, subtotal + CONFIG.cleaningFee));
+  return String(input?.value || "").trim().toUpperCase();
+}
+
+function updateDiscountHint() {
+  const hint = document.getElementById("discountHint");
+  if (!hint) return;
+
+  const code = getDiscountCode();
+  if (!code) {
+    hint.textContent = "";
+    hint.className = "field-hint";
+    return;
+  }
+
+  const value = CONFIG.discountCodes[code];
+  if (value) {
+    hint.textContent = `Cupom aplicado: -${money.format(value)}`;
+    hint.className = "field-hint is-success";
+  } else {
+    hint.textContent = "Código não reconhecido.";
+    hint.className = "field-hint is-error";
+  }
+}
+
+function formatBRPhone(value) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length === 0) return "";
+
+  const ddd = digits.slice(0, 2);
+  if (digits.length <= 2) return `(${ddd}`;
+
+  const rest = digits.slice(2);
+  const splitAt = digits.length <= 10 ? 4 : 5;
+  const first = rest.slice(0, splitAt);
+  const second = rest.slice(splitAt);
+  return second ? `(${ddd}) ${first}-${second}` : `(${ddd}) ${first}`;
 }
 
 function isSelectable(iso) {

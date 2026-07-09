@@ -89,6 +89,12 @@
       <symbol id="icon-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
       <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
       <symbol id="icon-bed" viewBox="0 0 24 24"><path d="M3 11h18v7H3z"/><path d="M3 11V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M9 11v-2h10v2"/></symbol>
+      <symbol id="icon-fan" viewBox="0 0 24 24"><path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/><path d="M12 12v.01"/></symbol>
+      <symbol id="icon-sofa" viewBox="0 0 24 24"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 4v9"/></symbol>
+      <symbol id="icon-washing-machine" viewBox="0 0 24 24"><path d="M3 6h3"/><path d="M17 6h.01"/><rect width="18" height="20" x="3" y="2" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"/></symbol>
+      <symbol id="icon-sprout" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="icon-images" viewBox="0 0 24 24"><path d="m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16"/><path d="M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2"/><circle cx="13" cy="7" r="1" style="fill:currentColor"/><rect x="8" y="2" width="14" height="14" rx="2"/></symbol>
     </svg>
 
     <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -193,17 +199,27 @@
 
           <div class="booking-choice reveal" id="reservar">
             <article class="stay-card" aria-label="Entre Dunas Chalé">
-              <div class="stay-card__media">
-                <img src="assets/img/quintal-varanda.jpeg" alt="Varanda e área externa do Entre Dunas Chalé" width="1600" height="1200" loading="lazy">
-                <span class="stay-card__badge"><svg class="icon"><use href="#icon-camera"></use></svg> 1 casa</span>
+              <div class="stay-card__media" id="stayCardMedia">
+                <div class="stay-card__slides">
+                  <img class="stay-card__slide is-active" src="assets/img/quintal-varanda.jpeg" alt="Varanda e área externa do Entre Dunas Chalé" width="1600" height="1200" loading="lazy">
+                  <img class="stay-card__slide" src="assets/img/quarto-arcondicionado.jpeg" alt="Quarto climatizado do Entre Dunas Chalé" width="1600" height="1200" loading="lazy">
+                  <img class="stay-card__slide" src="assets/img/sala.jpeg" alt="Sala principal do Entre Dunas Chalé" width="1200" height="1600" loading="lazy">
+                  <img class="stay-card__slide" src="assets/img/sala-jantar.jpeg" alt="Sala de jantar do Entre Dunas Chalé" width="1200" height="1600" loading="lazy">
+                  <img class="stay-card__slide" src="assets/img/banheiro-social.jpeg" alt="Banheiro social do Entre Dunas Chalé" width="1200" height="1600" loading="lazy">
+                  <img class="stay-card__slide" src="assets/img/frente-da-casa.jpeg" alt="Fachada do Entre Dunas Chalé" width="1600" height="720" loading="lazy">
+                </div>
+                <button class="stay-card__nav stay-card__nav--prev" type="button" aria-label="Foto anterior">
+                  <svg class="icon"><use href="#icon-chevron-left"></use></svg>
+                </button>
+                <button class="stay-card__nav stay-card__nav--next" type="button" aria-label="Próxima foto">
+                  <svg class="icon"><use href="#icon-chevron-right"></use></svg>
+                </button>
+                <span class="stay-card__badge" id="stayCardCounter"><svg class="icon"><use href="#icon-images"></use></svg> 1/6</span>
               </div>
               <div class="stay-card__body">
-                <div class="stay-card__title-row">
-                  <div>
-                    <p class="eyebrow">Casa inteira</p>
-                    <h3>Entre Dunas Chalé</h3>
-                  </div>
-                  <strong class="stay-card__price">R$ 480 <span>/ noite</span></strong>
+                <div class="stay-card__heading">
+                  <p class="eyebrow">Casa inteira</p>
+                  <h3>Entre Dunas Chalé</h3>
                 </div>
                 <div class="stay-card__facts" aria-label="Informações da casa">
                   <span><svg class="icon"><use href="#icon-users"></use></svg>Acomoda até 6 pessoas</span>
@@ -217,13 +233,17 @@
                   <span><svg class="icon"><use href="#icon-home"></use></svg>2 salas</span>
                 </div>
                 <p class="stay-card__note">Casa de temporada completa para famílias e grupos em Barreirinhas.</p>
-                <div class="stay-card__footer">
-                  <span class="stay-card__policy">Nenhuma cobrança é feita enquanto a reserva não for confirmada.</span>
+                <div class="stay-card__pricebar">
+                  <div class="stay-card__price">
+                    <strong>R$ 480</strong>
+                    <span>/ noite</span>
+                  </div>
                   <button class="button button--primary" type="button" id="openBookingPanel">
                     <span>Reservar</span>
                     <svg class="icon"><use href="#icon-calendar"></use></svg>
                   </button>
                 </div>
+                <p class="stay-card__policy"><svg class="icon"><use href="#icon-lock"></use></svg>Nenhuma cobrança é feita enquanto a reserva não for confirmada.</p>
               </div>
             </article>
           </div>
@@ -235,9 +255,8 @@
                 <h3>Informações da reserva</h3>
                 <p>Escolha as datas, informe a quantidade de hóspedes e envie a solicitação pelo WhatsApp.</p>
               </div>
-              <button class="button button--outline" type="button" id="closeBookingPanel">
-                <svg class="icon"><use href="#icon-chevron-left"></use></svg>
-                <span>Voltar</span>
+              <button class="booking-panel__close" type="button" id="closeBookingPanel" aria-label="Fechar reserva">
+                <svg class="icon"><use href="#icon-x"></use></svg>
               </button>
             </div>
 
@@ -257,8 +276,9 @@
                     <input type="number" id="guestInput" name="guests" min="1" max="6" value="2">
                   </label>
                   <label>
-                    <span>Desconto opcional</span>
-                    <input type="number" id="discountInput" name="discount" min="0" step="10" placeholder="R$ 0">
+                    <span>Cupom de desconto</span>
+                    <input type="text" id="discountInput" name="discount" placeholder="Ex: BEMVINDO10" autocomplete="off">
+                    <small class="field-hint" id="discountHint"></small>
                   </label>
                 </div>
 
@@ -311,7 +331,7 @@
                   </label>
                   <label>
                     <span>Telefone</span>
-                    <input type="tel" id="phoneInput" name="phone" autocomplete="tel" required>
+                    <input type="tel" id="phoneInput" name="phone" inputmode="numeric" autocomplete="tel" placeholder="(00) 00000-0000" maxlength="16" required>
                   </label>
                   <label>
                     <span>Email</span>
@@ -320,11 +340,14 @@
                   <div class="form-grid">
                     <label>
                       <span>Cidade</span>
-                      <input type="text" id="cityInput" name="city" autocomplete="address-level2" required>
+                      <input type="text" id="cityInput" name="city" list="cityOptions" autocomplete="address-level2" required>
+                      <datalist id="cityOptions"></datalist>
                     </label>
                     <label>
                       <span>Estado</span>
-                      <input type="text" id="stateInput" name="state" autocomplete="address-level1" maxlength="2" required>
+                      <select id="stateInput" name="state" autocomplete="address-level1" required>
+                        <option value="" disabled selected>UF</option>
+                      </select>
                     </label>
                   </div>
                   <label class="form-full-span">
@@ -353,99 +376,55 @@
         <div class="container">
           <div class="section-heading reveal">
             <p class="eyebrow">Comodidades do Chalé</p>
-            <h2>Tudo que você precisa para uma estadia completa.</h2>
+            <h2>O que este hotel oferece</h2>
           </div>
 
-          <div class="chalet-features">
-            <div class="chalet-features__group reveal">
-              <h3 class="chalet-features__group-title">Espaços internos</h3>
-              <ul class="chalet-features__list">
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-home"></use></svg></span>
-                  <div>
-                    <strong>Chalé inteiro</strong>
-                    <span>Você terá a casa inteira só para você</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-snow"></use></svg></span>
-                  <div>
-                    <strong>1 quarto climatizado</strong>
-                    <span>Suíte exclusiva com ar-condicionado e banheiro privativo</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><span class="icon icon--custom">🍃</span></span>
-                  <div>
-                    <strong>1 quarto com ventilador</strong>
-                    <span>Quarto arejado para noites mais frescas</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-utensils"></use></svg></span>
-                  <div>
-                    <strong>Cozinha completa</strong>
-                    <span>Totalmente equipada com utensílios, fogão e geladeira</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><span class="icon icon--custom">🛋️</span></span>
-                  <div>
-                    <strong>2 salas</strong>
-                    <span>Sala de jantar ampla + sala de estar aberta e ventilada</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-bath"></use></svg></span>
-                  <div>
-                    <strong>Banheiro social</strong>
-                    <span>Banheiro adicional para receber visitas</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <div class="chalet-features__group reveal">
-              <h3 class="chalet-features__group-title">Área externa e serviços</h3>
-              <ul class="chalet-features__list">
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-wifi"></use></svg></span>
-                  <div>
-                    <strong>Wi-Fi grátis</strong>
-                    <span>Conexão de alta velocidade para toda a casa</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-car"></use></svg></span>
-                  <div>
-                    <strong>Garagem</strong>
-                    <span>Espaço fechado e seguro para seu veículo</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><span class="icon icon--custom">🧺</span></span>
-                  <div>
-                    <strong>Área de serviço</strong>
-                    <span>Espaço dedicado para lavar roupas</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><span class="icon icon--custom">🌿</span></span>
-                  <div>
-                    <strong>Varanda e quintal</strong>
-                    <span>Área externa ampla, ventilada e com segurança</span>
-                  </div>
-                </li>
-                <li class="chalet-features__item">
-                  <span class="chalet-features__icon"><svg class="icon"><use href="#icon-shield"></use></svg></span>
-                  <div>
-                    <strong>Casa segura</strong>
-                    <span>Propriedade murada com entrada aberta e contato direto com o anfitrião</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <ul class="amenities-grid">
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-home"></use></svg></span>
+              <span>Chalé inteiro</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-snow"></use></svg></span>
+              <span>Quarto climatizado</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-fan"></use></svg></span>
+              <span>Quarto com ventilador</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-utensils"></use></svg></span>
+              <span>Cozinha completa</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-sofa"></use></svg></span>
+              <span>2 salas</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-bath"></use></svg></span>
+              <span>Banheiro social</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-wifi"></use></svg></span>
+              <span>Wi-Fi grátis</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-car"></use></svg></span>
+              <span>Garagem</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-washing-machine"></use></svg></span>
+              <span>Área de serviço</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-sprout"></use></svg></span>
+              <span>Varanda e quintal</span>
+            </li>
+            <li class="amenities-grid__item reveal">
+              <span class="amenities-grid__icon"><svg class="icon"><use href="#icon-shield"></use></svg></span>
+              <span>Casa segura</span>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -478,9 +457,9 @@
             <h2>Experiências próximas para montar seu roteiro.</h2>
           </div>
           <div class="destination-grid">
-            <article class="destination-card reveal"><img src="assets/img/quintal.jpeg" alt="Área externa da casa em Barreirinhas" width="1200" height="1600" loading="lazy"><div><h3>Lençóis Maranhenses</h3><p>Passeios para lagoas, dunas e paisagens naturais únicas.</p><span>Saídas por agências locais</span></div></article>
-            <article class="destination-card reveal"><img src="assets/img/entrada-porta-principal-2.jpeg" alt="Entrada da Casa Barreirinhas" width="1200" height="1600" loading="lazy"><div><h3>Rio Preguiças</h3><p>Roteiro clássico de barco com paradas em comunidades e natureza.</p><span>Rota tradicional da região</span></div></article>
-            <article class="destination-card reveal"><img src="assets/img/quintal-varanda-2.jpeg" alt="Varanda e área externa da Casa Barreirinhas" width="1200" height="1600" loading="lazy"><div><h3>Atins e Caburé</h3><p>Praia, kitesurf, restaurantes e clima de vila para dias mais longos.</p><span>Ideal para passeio de dia inteiro</span></div></article>
+            <article class="destination-card reveal"><img src="assets/img/lencois.jpg" alt="Lençóis Maranhenses" width="1200" height="1600" loading="lazy"><div><h3>Lençóis Maranhenses</h3><p>Passeios para lagoas, dunas e paisagens naturais únicas.</p><span>Saídas por agências locais</span></div></article>
+            <article class="destination-card reveal"><img src="assets/img/rio-preguica.jpg" alt="Rio Preguiça" width="1200" height="1600" loading="lazy"><div><h3>Rio Preguiças</h3><p>Roteiro clássico de barco com paradas em comunidades e natureza.</p><span>Rota tradicional da região</span></div></article>
+            <article class="destination-card reveal"><img src="assets/img/atins.jpg" alt="Atins" width="1200" height="1600" loading="lazy"><div><h3>Atins e Caburé</h3><p>Praia, kitesurf, restaurantes e clima de vila para dias mais longos.</p><span>Ideal para passeio de dia inteiro</span></div></article>
           </div>
         </div>
       </section>

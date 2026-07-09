@@ -6,7 +6,8 @@ service cloud.firestore {
     // estas regras) pode criar/atualizar. Um hóspede logado só pode LER
     // as próprias reservas, nunca escrever direto do navegador.
     match /reservations/{reservationId} {
-      allow read: if request.auth != null && request.auth.token.email == resource.data.email;
+      allow read: if request.auth != null &&
+        (request.auth.token.email == resource.data.email || request.auth.token.email == "entredunaschale@gmail.com");
       allow write: if false;
     }
 

@@ -733,6 +733,21 @@ function setupBooking() {
     if (event.key === "Escape") hideBookingPanel();
   };
 
+  const prefillFromProfile = () => {
+    try {
+      const profile = JSON.parse(localStorage.getItem("userProfile") || "null");
+      if (!profile) return;
+      const nameField = document.getElementById("nameInput");
+      const phoneField = document.getElementById("phoneInput");
+      const emailField = document.getElementById("emailInput");
+      if (nameField && !nameField.value && profile.name) nameField.value = profile.name;
+      if (phoneField && !phoneField.value && profile.phone) phoneField.value = profile.phone;
+      if (emailField && !emailField.value && profile.email) emailField.value = profile.email;
+    } catch {
+      /* localStorage indisponível ou dado inválido, ignora */
+    }
+  };
+
   const showBookingPanel = () => {
     if (!bookingPanel) return;
 
@@ -746,6 +761,7 @@ function setupBooking() {
     document.addEventListener("keydown", onPanelKeydown);
     requestAnimationFrame(renderCalendar);
     window.setTimeout(() => checkInInput.focus({ preventScroll: true }), 120);
+    prefillFromProfile();
   };
 
   const hideBookingPanel = () => {

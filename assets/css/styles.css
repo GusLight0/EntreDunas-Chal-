@@ -3011,8 +3011,8 @@ textarea:focus {
 }
 
 .whatsapp-float {
+  display: none;
   bottom: 22px;
-  display: grid;
   width: 56px;
   height: 56px;
   place-items: center;
@@ -3020,6 +3020,11 @@ textarea:focus {
   background: #1fa855;
   box-shadow: 0 18px 38px rgba(31, 168, 85, 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+body.home-page:not(.booking-open) .whatsapp-float,
+body.profile-open .whatsapp-float {
+  display: grid;
 }
 
 .whatsapp-float:hover {

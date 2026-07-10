@@ -492,55 +492,70 @@
             <p class="eyebrow">Avaliações</p>
             <h2>Uma experiência pensada para receber bem.</h2>
           </div>
-          <div class="review-slider reveal" id="reviewSlider" aria-live="polite">
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>É um lugar ótimo, maravilhoso, super tranquilo e bem espaçoso, local bem ventilado e um quarto climatizado, gostei bastante!  recomendo.</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a-/ALV-UjX2iM0FBrMEm1AlsIJMQO7LMSiA2PacUlI-c1zxuM0VayG0v5Y=w45-h45-p-rp-mo-br100" alt="Foto de Arthur Soares" width="48" height="48">
-                <strong>Arthur Soares</strong>
-              </div>
-            </article>
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>O Lugar é bem ventilado, espaçoso e na maioria dos momentos ele é tranquilo e relaxante, um lugar muito bom para quem quer tranquilidade, muito bom!</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a/ACg8ocL9ybNhJjXhKhIgMkY5Yi2mRfa751xh-Az3Qc3VSa1BETP0xxE=w45-h45-p-rp-mo-br100" alt="Foto de Galela Concreto" width="48" height="48">
-                <strong>Galela Concreto</strong>
-              </div>
-            </article>
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>Região em constante crescimento turístico (porta de entrada dos Lençóis Maranhenses), ótima procura para aluguel por temporada.</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a-/ALV-UjXizxOiQExD9jRpou9TqojWMgr_YwdS16Ieklw1liUAAuvAwAr8dw=w45-h45-p-rp-mo-ba12-br100" alt="Foto de Eliana Soares" width="48" height="48">
-                <strong>ELIANA SOARES</strong>
-              </div>
-            </article>
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>Excelente hospedagem! Ambiente limpo, confortável e muito bem organizado. A decoração é aconchegante e a localização é ótima. Atendimento atencioso e estadia tranquila. Recomendo e voltaria com certeza! 😊 …</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a-/ALV-UjURsefetZu7njpMbH8DaPfkS3oJQiNH2vnkXX3eOohWa9H_ifdC=w45-h45-p-rp-mo-br100" alt="Foto de Elias" width="48" height="48">
-                <strong>ELIAS</strong>
-              </div>
-            </article>
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>É um lugar maravilhoso,lindo e agradável. Tem uma casa muito bonita e aconchegante e também é um dos melhores lugares pra você curtir suas férias.</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a/ACg8ocJsdclTsxkX0LUKAKhJTZCCFsBTmBeSpbFHiYCCp9e2f5_XvQ=w45-h45-p-rp-mo-br100" alt="Foto de Mikael Dias" width="48" height="48">
-                <strong>Mikael Dias</strong>
-              </div>
-            </article>
-            <article class="review-card">
-              <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
-              <p>...</p>
-              <div class="review-author">
-                <img src="https://lh3.googleusercontent.com/a-/ALV-UjUdtPAySz-vCLG4wQDXAPK20ILb24xgtxrCWL79TwlRxYysOBdNeQ=w45-h45-p-rp-mo-br100" alt="Foto de Ester Soarers" width="48" height="48">
-                <strong>ester soares</strong>
-              </div>
-            </article>
+          <div class="review-carousel reveal">
+            <button class="review-arrow review-arrow--prev icon-button" type="button" id="reviewPrev" aria-label="Avaliação anterior">
+              <svg class="icon"><use href="#icon-chevron-left"></use></svg>
+            </button>
+            <div class="review-slider" id="reviewSlider" aria-live="polite" tabindex="0">
+              <article class="review-card">
+                <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
+                <p>É um lugar ótimo, maravilhoso, super tranquilo e bem espaçoso, local bem ventilado e um quarto climatizado, gostei bastante!  recomendo.</p>
+                <div class="review-author">
+                  <img src="https://lh3.googleusercontent.com/a-/ALV-UjX2iM0FBrMEm1AlsIJMQO7LMSiA2PacUlI-c1zxuM0VayG0v5Y=w45-h45-p-rp-mo-br100" alt="Foto de Arthur Soares" width="44" height="44">
+                  <span>
+                    <strong>Arthur Soares</strong>
+                    <small>Avaliação no Google</small>
+                  </span>
+                </div>
+              </article>
+              <article class="review-card">
+                <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
+                <p>O Lugar é bem ventilado, espaçoso e na maioria dos momentos ele é tranquilo e relaxante, um lugar muito bom para quem quer tranquilidade, muito bom!</p>
+                <div class="review-author">
+                  <img src="https://lh3.googleusercontent.com/a/ACg8ocL9ybNhJjXhKhIgMkY5Yi2mRfa751xh-Az3Qc3VSa1BETP0xxE=w45-h45-p-rp-mo-br100" alt="Foto de Galela Concreto" width="44" height="44">
+                  <span>
+                    <strong>Galela Concreto</strong>
+                    <small>Avaliação no Google</small>
+                  </span>
+                </div>
+              </article>
+              <article class="review-card">
+                <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
+                <p>Região em constante crescimento turístico (porta de entrada dos Lençóis Maranhenses), ótima procura para aluguel por temporada.</p>
+                <div class="review-author">
+                  <img src="https://lh3.googleusercontent.com/a-/ALV-UjXizxOiQExD9jRpou9TqojWMgr_YwdS16Ieklw1liUAAuvAwAr8dw=w45-h45-p-rp-mo-ba12-br100" alt="Foto de Eliana Soares" width="44" height="44">
+                  <span>
+                    <strong>Eliana Soares</strong>
+                    <small>Avaliação no Google</small>
+                  </span>
+                </div>
+              </article>
+              <article class="review-card">
+                <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
+                <p>Excelente hospedagem! Ambiente limpo, confortável e muito bem organizado. A decoração é aconchegante e a localização é ótima. Atendimento atencioso e estadia tranquila. Recomendo e voltaria com certeza!</p>
+                <div class="review-author">
+                  <img src="https://lh3.googleusercontent.com/a-/ALV-UjURsefetZu7njpMbH8DaPfkS3oJQiNH2vnkXX3eOohWa9H_ifdC=w45-h45-p-rp-mo-br100" alt="Foto de Elias" width="44" height="44">
+                  <span>
+                    <strong>Elias</strong>
+                    <small>Avaliação no Google</small>
+                  </span>
+                </div>
+              </article>
+              <article class="review-card">
+                <div class="review-stars" aria-label="Cinco estrelas"><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg><svg class="icon"><use href="#icon-star"></use></svg></div>
+                <p>É um lugar maravilhoso, lindo e agradável. Tem uma casa muito bonita e aconchegante e também é um dos melhores lugares pra você curtir suas férias.</p>
+                <div class="review-author">
+                  <img src="https://lh3.googleusercontent.com/a/ACg8ocJsdclTsxkX0LUKAKhJTZCCFsBTmBeSpbFHiYCCp9e2f5_XvQ=w45-h45-p-rp-mo-br100" alt="Foto de Mikael Dias" width="44" height="44">
+                  <span>
+                    <strong>Mikael Dias</strong>
+                    <small>Avaliação no Google</small>
+                  </span>
+                </div>
+              </article>
+            </div>
+            <button class="review-arrow review-arrow--next icon-button" type="button" id="reviewNext" aria-label="Próxima avaliação">
+              <svg class="icon"><use href="#icon-chevron-right"></use></svg>
+            </button>
           </div>
           <div class="review-dots" id="reviewDots" aria-label="Navegar entre avaliações"></div>
         </div>

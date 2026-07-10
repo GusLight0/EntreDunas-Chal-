@@ -1111,14 +1111,18 @@ function updateWhatsAppFloat() {
 
 function setupReviews() {
   const DURATION = 5200;
-  const reviews = [...document.querySelectorAll(".review-card")];
+  const slider = document.getElementById("reviewSlider");
+  const cards = [...document.querySelectorAll(".review-card")];
   const dotsContainer = document.getElementById("reviewDots");
-  if (reviews.length < 2) return;
+  const prevButton = document.getElementById("reviewPrev");
+  const nextButton = document.getElementById("reviewNext");
+  if (!slider || cards.length < 2) return;
 
   let index = 0;
   let timer = null;
+  let isSyncingScroll = false;
 
-  const dots = reviews.map((_, i) => {
+  const dots = cards.map((_, i) => {
     const dot = document.createElement("button");
     dot.className = "review-dot";
     dot.setAttribute("aria-label", `Avaliação ${i + 1}`);
@@ -1139,31 +1143,50 @@ function setupReviews() {
     });
   };
 
-  const goTo = (next) => {
-    if (next === index) return;
-    const leaving = reviews[index];
-    leaving.classList.add("is-leaving");
-    leaving.classList.remove("is-active");
-    setTimeout(() => leaving.classList.remove("is-leaving"), 520);
-    index = next;
-    void reviews[index].offsetWidth;
-    reviews[index].classList.add("is-active");
-    updateDots(index);
+  const updateArrows = (active) => {
+    if (prevButton) prevButton.disabled = active === 0;
+    if (nextButton) nextButton.disabled = active === cards.length - 1;
   };
 
-  const advance = () => {
-    const next = (index + 1) % reviews.length;
-    goTo(next);
+  const goTo = (next) => {
+    index = Math.max(0, Math.min(next, cards.length - 1));
+    isSyncingScroll = true;
+    slider.scrollTo({ left: cards[index].offsetLeft - slider.offsetLeft, behavior: "smooth" });
+    updateDots(index);
+    updateArrows(index);
+    window.clearTimeout(goTo.releaseTimer);
+    goTo.releaseTimer = window.setTimeout(() => { isSyncingScroll = false; }, 600);
   };
+
+  const advance = () => goTo((index + 1) % cards.length);
 
   const resetTimer = () => {
     clearInterval(timer);
     timer = setInterval(advance, DURATION);
   };
 
+  prevButton?.addEventListener("click", () => { goTo(index - 1); resetTimer(); });
+  nextButton?.addEventListener("click", () => { goTo(index + 1); resetTimer(); });
+
+  const observer = new IntersectionObserver((entries) => {
+    if (isSyncingScroll) return;
+    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible) return;
+    const next = cards.indexOf(visible.target);
+    if (next === -1 || next === index) return;
+    index = next;
+    updateDots(index);
+    updateArrows(index);
+  }, { root: slider, threshold: [0.6] });
+  cards.forEach((card) => observer.observe(card));
+
+  slider.addEventListener("pointerdown", () => clearInterval(timer));
+  slider.addEventListener("pointerup", resetTimer);
+  slider.addEventListener("mouseenter", () => clearInterval(timer));
+  slider.addEventListener("mouseleave", resetTimer);
+
   updateDots(0);
-  void reviews[0].offsetWidth;
-  reviews[0].classList.add("is-active");
+  updateArrows(0);
   resetTimer();
 }
 

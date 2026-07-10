@@ -6,6 +6,8 @@ import {
   getRedirectResult,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  EmailAuthProvider,
+  linkWithCredential,
   signOut,
   onAuthStateChanged,
   updateProfile
@@ -49,6 +51,8 @@ const profileSaveButton = document.getElementById("profileSaveButton");
 const profileState = document.getElementById("profileState");
 const logoutButton = document.getElementById("logoutButton");
 const adminPanelLink = document.getElementById("adminPanelLink");
+const passwordSetup = document.getElementById("passwordSetup");
+const setPasswordForm = document.getElementById("setPasswordForm");
 
 if (accountButton && authModal && accountPanel) {
   BR_STATES.forEach(([uf, name]) => {
@@ -95,7 +99,9 @@ if (accountButton && authModal && accountPanel) {
       "auth/invalid-email": "E-mail inválido.",
       "auth/too-many-requests": "Muitas tentativas. Tente novamente em alguns minutos.",
       "auth/unauthorized-domain": "Este site ainda não está autorizado no Firebase (Authentication > Settings > Authorized domains).",
-      "auth/operation-not-allowed": "Esse método de login ainda não está habilitado no Firebase (Authentication > Sign-in method)."
+      "auth/operation-not-allowed": "Esse método de login ainda não está habilitado no Firebase (Authentication > Sign-in method).",
+      "auth/requires-recent-login": "Por segurança, saia e entre de novo com o Google antes de criar uma senha.",
+      "auth/credential-already-in-use": "Essa senha já está associada a outra conta."
     };
     return map[error?.code] || `Não foi possível concluir (${error?.code || "erro desconhecido"}). Tente novamente.`;
   }
@@ -166,6 +172,10 @@ if (accountButton && authModal && accountPanel) {
     if (accountViewEmail) accountViewEmail.textContent = profile.email || "";
     setAvatar(accountViewAvatar, profile.photoURL);
     if (adminPanelLink) adminPanelLink.hidden = profile.email !== OWNER_EMAIL;
+    if (passwordSetup) {
+      const hasPassword = auth.currentUser?.providerData?.some((p) => p.providerId === "password") ?? true;
+      passwordSetup.hidden = hasPassword;
+    }
   }
 
   function openAccountPanel(profile) {
@@ -315,6 +325,28 @@ if (accountButton && authModal && accountPanel) {
       showToast("Dados salvos com sucesso!");
     } catch (error) {
       showToast("Não foi possível salvar agora. Tente de novo.", "error");
+    }
+  });
+
+  setPasswordForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const errorEl = document.getElementById("setPasswordError");
+    errorEl.textContent = "";
+    if (newPassword !== confirmPassword) {
+      errorEl.textContent = "As senhas não coincidem.";
+      return;
+    }
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      await linkWithCredential(user, EmailAuthProvider.credential(user.email, newPassword));
+      setPasswordForm.reset();
+      if (passwordSetup) passwordSetup.hidden = true;
+      showToast("Senha criada! Agora você também pode entrar com e-mail e senha.");
+    } catch (error) {
+      errorEl.textContent = authErrorMessage(error);
     }
   });
 

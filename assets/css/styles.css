@@ -1153,6 +1153,15 @@ body.account-open .back-to-top {
   display: none;
 }
 
+body.profile-open {
+  overflow: hidden;
+}
+
+body.profile-open .whatsapp-float,
+body.profile-open .back-to-top {
+  display: none;
+}
+
 .booking-panel {
   position: fixed;
   inset: var(--header-height) 0 0 0;
@@ -2080,49 +2089,141 @@ textarea:focus {
   margin-top: 2px;
 }
 
-.account-summary {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
+.account-panel {
+  position: fixed;
+  inset: var(--header-height) 0 0 0;
+  z-index: 95;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface-soft);
 }
 
-.account-summary__avatar {
+.account-panel__close {
+  position: fixed;
+  top: calc(var(--header-height) + 16px);
+  right: 16px;
+  z-index: 96;
+  background: var(--surface);
+  box-shadow: 0 8px 20px rgba(18, 26, 21, 0.14);
+}
+
+.account-panel__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  min-height: calc(100svh - var(--header-height));
+}
+
+.account-panel__visual {
+  position: relative;
+  min-height: 280px;
+}
+
+.account-panel__visual-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-panel__visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(18, 35, 28, 0.2), rgba(18, 35, 28, 0.78));
+}
+
+.account-panel__visual-overlay {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 48px 32px;
+  text-align: center;
+  color: #fff;
+}
+
+.account-panel__avatar {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 18px;
   overflow: hidden;
   border-radius: 50%;
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.16);
+  border: 3px solid rgba(255, 255, 255, 0.5);
 }
 
-.account-summary__avatar img {
+.account-panel__avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.account-summary__avatar .icon {
-  width: 26px;
-  height: 26px;
-  color: var(--muted);
+.account-panel__avatar .icon {
+  width: 42px;
+  height: 42px;
+  color: #fff;
 }
 
-.account-summary .eyebrow {
+.account-panel__visual-overlay h2 {
+  margin: 0 0 6px;
+  color: #fff;
+  font-size: 1.6rem;
+}
+
+.account-panel__visual-overlay p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.account-panel__content {
+  padding: 56px min(64px, 6vw) 64px;
+  max-width: 560px;
+}
+
+.account-panel__content > .eyebrow {
   margin: 0;
 }
 
-.account-summary h3 {
-  margin: 4px 0 0;
+.account-panel__content > h2 {
+  margin: 6px 0 10px;
 }
 
-#authAccountView .button {
+.account-panel__content > p {
+  margin: 0 0 28px;
+  color: var(--muted);
+}
+
+.account-panel__content .button {
   width: 100%;
   margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .account-panel__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .account-panel__visual {
+    min-height: 220px;
+  }
+
+  .account-panel__content {
+    padding: 32px 24px 48px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .account-panel {
+    inset: var(--header-height) 0 calc(78px + env(safe-area-inset-bottom)) 0;
+  }
 }
 
 .admin-gate {

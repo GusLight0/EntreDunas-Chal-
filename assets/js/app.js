@@ -740,9 +740,13 @@ function setupBooking() {
       const nameField = document.getElementById("nameInput");
       const phoneField = document.getElementById("phoneInput");
       const emailField = document.getElementById("emailInput");
+      const cityField = document.getElementById("cityInput");
+      const stateField = document.getElementById("stateInput");
       if (nameField && !nameField.value && profile.name) nameField.value = profile.name;
       if (phoneField && !phoneField.value && profile.phone) phoneField.value = profile.phone;
       if (emailField && !emailField.value && profile.email) emailField.value = profile.email;
+      if (cityField && !cityField.value && profile.city) cityField.value = profile.city;
+      if (stateField && !stateField.value && profile.state) stateField.value = profile.state;
     } catch {
       /* localStorage indisponível ou dado inválido, ignora */
     }

@@ -18,23 +18,45 @@ import {
 
 const OWNER_EMAIL = "entredunaschale@gmail.com";
 
+const BR_STATES = [
+  ["AC", "Acre"], ["AL", "Alagoas"], ["AP", "Amapá"], ["AM", "Amazonas"], ["BA", "Bahia"],
+  ["CE", "Ceará"], ["DF", "Distrito Federal"], ["ES", "Espírito Santo"], ["GO", "Goiás"],
+  ["MA", "Maranhão"], ["MT", "Mato Grosso"], ["MS", "Mato Grosso do Sul"], ["MG", "Minas Gerais"],
+  ["PA", "Pará"], ["PB", "Paraíba"], ["PR", "Paraná"], ["PE", "Pernambuco"], ["PI", "Piauí"],
+  ["RJ", "Rio de Janeiro"], ["RN", "Rio Grande do Norte"], ["RS", "Rio Grande do Sul"],
+  ["RO", "Rondônia"], ["RR", "Roraima"], ["SC", "Santa Catarina"], ["SP", "São Paulo"],
+  ["SE", "Sergipe"], ["TO", "Tocantins"]
+];
+
 const accountButton = document.getElementById("accountButton");
 const accountAvatar = document.getElementById("accountAvatar");
-const accountViewAvatar = document.getElementById("accountViewAvatar");
-const accountViewGreeting = document.getElementById("accountViewGreeting");
+const siteHeader = document.getElementById("siteHeader");
+
 const authModal = document.getElementById("authModal");
 const closeAuthModal = document.getElementById("closeAuthModal");
-const guestView = document.getElementById("authGuestView");
-const accountView = document.getElementById("authAccountView");
 const tabs = Array.from(document.querySelectorAll("[data-auth-tab]"));
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
-const profileForm = document.getElementById("profileForm");
 const googleSignInButton = document.getElementById("googleSignIn");
+
+const accountPanel = document.getElementById("accountPanel");
+const closeAccountPanel = document.getElementById("closeAccountPanel");
+const accountViewAvatar = document.getElementById("accountViewAvatar");
+const accountViewGreeting = document.getElementById("accountViewGreeting");
+const accountViewEmail = document.getElementById("accountViewEmail");
+const profileForm = document.getElementById("profileForm");
+const profileState = document.getElementById("profileState");
 const logoutButton = document.getElementById("logoutButton");
 const adminPanelLink = document.getElementById("adminPanelLink");
 
-if (accountButton && authModal) {
+if (accountButton && authModal && accountPanel) {
+  BR_STATES.forEach(([uf, name]) => {
+    const option = document.createElement("option");
+    option.value = uf;
+    option.textContent = `${uf} - ${name}`;
+    profileState?.appendChild(option);
+  });
+
   function formatPhone(value) {
     const digits = value.replace(/\D/g, "").slice(0, 11);
     if (digits.length <= 2) return digits;
@@ -65,16 +87,6 @@ if (accountButton && authModal) {
     return map[error?.code] || `Não foi possível concluir (${error?.code || "erro desconhecido"}). Tente novamente.`;
   }
 
-  function showGuestView() {
-    guestView.hidden = false;
-    accountView.hidden = true;
-    tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.authTab === "login"));
-    loginForm.hidden = false;
-    signupForm.hidden = true;
-    document.getElementById("loginError").textContent = "";
-    document.getElementById("signupError").textContent = "";
-  }
-
   function setAvatar(container, photoURL) {
     if (!container) return;
     container.innerHTML = "";
@@ -89,19 +101,16 @@ if (accountButton && authModal) {
     }
   }
 
-  function showAccountView(profile) {
-    guestView.hidden = true;
-    accountView.hidden = false;
-    document.getElementById("profileName").value = profile.name || "";
-    document.getElementById("profilePhone").value = profile.phone || "";
-    document.getElementById("profileEmail").value = profile.email || "";
-    document.getElementById("profileStatus").textContent = "";
-    if (accountViewGreeting) accountViewGreeting.textContent = profile.name ? `Olá, ${profile.name.split(" ")[0]}` : "Seus dados";
-    setAvatar(accountViewAvatar, profile.photoURL);
-    if (adminPanelLink) adminPanelLink.hidden = profile.email !== OWNER_EMAIL;
+  function showGuestView() {
+    tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.authTab === "login"));
+    loginForm.hidden = false;
+    signupForm.hidden = true;
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("signupError").textContent = "";
   }
 
   function openModal() {
+    showGuestView();
     authModal.hidden = false;
     document.body.classList.add("account-open");
   }
@@ -109,6 +118,43 @@ if (accountButton && authModal) {
   function closeModal() {
     authModal.hidden = true;
     document.body.classList.remove("account-open");
+  }
+
+  let headerWasScrolled = false;
+
+  function onPanelKeydown(event) {
+    if (event.key === "Escape") closeAccountPanelFn();
+  }
+
+  function fillAccountPanel(profile) {
+    document.getElementById("profileName").value = profile.name || "";
+    document.getElementById("profilePhone").value = profile.phone || "";
+    document.getElementById("profileEmail").value = profile.email || "";
+    document.getElementById("profileCity").value = profile.city || "";
+    if (profileState) profileState.value = profile.state || "";
+    document.getElementById("profileStatus").textContent = "";
+    if (accountViewGreeting) accountViewGreeting.textContent = profile.name ? `Olá, ${profile.name.split(" ")[0]}` : "Olá";
+    if (accountViewEmail) accountViewEmail.textContent = profile.email || "";
+    setAvatar(accountViewAvatar, profile.photoURL);
+    if (adminPanelLink) adminPanelLink.hidden = profile.email !== OWNER_EMAIL;
+  }
+
+  function openAccountPanel(profile) {
+    fillAccountPanel(profile);
+    accountPanel.hidden = false;
+    accountPanel.scrollTop = 0;
+    document.body.classList.add("profile-open");
+    headerWasScrolled = siteHeader?.classList.contains("is-scrolled") ?? false;
+    siteHeader?.classList.add("is-scrolled");
+    document.addEventListener("keydown", onPanelKeydown);
+  }
+
+  function closeAccountPanelFn() {
+    accountPanel.hidden = true;
+    document.body.classList.remove("profile-open");
+    if (!headerWasScrolled) siteHeader?.classList.remove("is-scrolled");
+    document.removeEventListener("keydown", onPanelKeydown);
+    accountButton.focus({ preventScroll: true });
   }
 
   async function fetchProfile(user) {
@@ -126,15 +172,15 @@ if (accountButton && authModal) {
   accountButton.addEventListener("click", async () => {
     const user = auth.currentUser;
     if (!user) {
-      showGuestView();
+      openModal();
     } else {
-      showAccountView(await fetchProfile(user));
+      openAccountPanel(await fetchProfile(user));
     }
-    openModal();
   });
 
   closeAuthModal?.addEventListener("click", closeModal);
   document.querySelectorAll("[data-auth-close]").forEach((el) => el.addEventListener("click", closeModal));
+  closeAccountPanel?.addEventListener("click", closeAccountPanelFn);
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !authModal.hidden) closeModal();
   });
@@ -152,11 +198,8 @@ if (accountButton && authModal) {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       const profile = await fetchProfile(result.user);
       applyProfile(profile);
-      if (!profile.phone) {
-        showAccountView(profile);
-      } else {
-        closeModal();
-      }
+      closeModal();
+      if (!profile.phone) openAccountPanel(profile);
     } catch (error) {
       if (error?.code === "auth/popup-closed-by-user") return;
       if (error?.code === "auth/popup-blocked") {
@@ -173,14 +216,11 @@ if (accountButton && authModal) {
       if (!result) return;
       const profile = await fetchProfile(result.user);
       applyProfile(profile);
-      if (!profile.phone) {
-        showAccountView(profile);
-        openModal();
-      }
+      closeModal();
+      if (!profile.phone) openAccountPanel(profile);
     })
     .catch((error) => {
       console.error("Google redirect sign-in error:", error?.code, error?.message);
-      showGuestView();
       openModal();
       document.getElementById("loginError").textContent = authErrorMessage(error);
     });
@@ -230,15 +270,18 @@ if (accountButton && authModal) {
     if (!user) return;
     const name = document.getElementById("profileName").value.trim();
     const phone = document.getElementById("profilePhone").value.trim();
+    const city = document.getElementById("profileCity").value.trim();
+    const state = profileState?.value || "";
     const statusEl = document.getElementById("profileStatus");
     try {
       await setDoc(
         doc(db, "users", user.uid),
-        { name, phone, email: user.email, updatedAt: new Date().toISOString() },
+        { name, phone, city, state, email: user.email, updatedAt: new Date().toISOString() },
         { merge: true }
       );
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
-      applyProfile({ name, phone, email: user.email, photoURL: user.photoURL || null });
+      applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
+      if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
       statusEl.textContent = "Salvo!";
       statusEl.className = "field-hint is-success";
     } catch (error) {
@@ -250,7 +293,7 @@ if (accountButton && authModal) {
   logoutButton?.addEventListener("click", async () => {
     await signOut(auth);
     localStorage.removeItem("userProfile");
-    closeModal();
+    closeAccountPanelFn();
   });
 
   onAuthStateChanged(auth, async (user) => {

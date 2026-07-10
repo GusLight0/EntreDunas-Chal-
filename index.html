@@ -666,18 +666,39 @@
           </form>
         </div>
 
-        <div id="authAccountView" hidden>
-          <div class="account-summary">
-            <span class="account-summary__avatar" id="accountViewAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
-            <div>
-              <p class="eyebrow">Minha conta</p>
-              <h3 id="accountViewGreeting">Seus dados</h3>
-            </div>
+      </div>
+    </div>
+
+    <div class="account-panel" id="accountPanel" hidden>
+      <button class="account-panel__close icon-button" type="button" id="closeAccountPanel" aria-label="Fechar conta">
+        <svg class="icon"><use href="#icon-x"></use></svg>
+      </button>
+      <div class="account-panel__layout">
+        <div class="account-panel__visual">
+          <img class="account-panel__visual-img" src="assets/img/lencois.jpg" alt="">
+          <div class="account-panel__visual-overlay">
+            <span class="account-panel__avatar" id="accountViewAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
+            <h2 id="accountViewGreeting">Olá</h2>
+            <p id="accountViewEmail"></p>
           </div>
+        </div>
+        <div class="account-panel__content">
+          <p class="eyebrow">Minha conta</p>
+          <h2>Seus dados</h2>
+          <p>Mantenha suas informações atualizadas para agilizar suas próximas reservas.</p>
           <form class="auth-form" id="profileForm">
             <label><span>Nome completo</span><input type="text" id="profileName" autocomplete="name" required></label>
             <label><span>Telefone</span><input type="tel" id="profilePhone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required></label>
             <label><span>E-mail</span><input type="email" id="profileEmail" disabled></label>
+            <div class="form-grid">
+              <label><span>Cidade</span><input type="text" id="profileCity" autocomplete="address-level2"></label>
+              <label>
+                <span>Estado</span>
+                <select id="profileState" autocomplete="address-level1">
+                  <option value="" selected>UF</option>
+                </select>
+              </label>
+            </div>
             <p class="field-hint" id="profileStatus"></p>
             <button class="button button--primary" type="submit"><span>Salvar</span></button>
           </form>

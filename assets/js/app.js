@@ -929,7 +929,14 @@ function renderMonth(monthDate) {
 function selectCalendarDate(iso) {
   if (!isSelectable(iso)) return;
 
-  if (!state.selectedCheckIn || state.selectedCheckOut || compareISO(iso, state.selectedCheckIn) <= 0) {
+  if (iso === state.selectedCheckIn) {
+    state.selectedCheckIn = "";
+    state.selectedCheckOut = "";
+    setBookingStatus("Entrada removida. Escolha a data de entrada.", "");
+  } else if (iso === state.selectedCheckOut) {
+    state.selectedCheckOut = "";
+    setBookingStatus("Saída removida. Escolha outra data de saída.", "");
+  } else if (!state.selectedCheckIn || state.selectedCheckOut || compareISO(iso, state.selectedCheckIn) <= 0) {
     state.selectedCheckIn = iso;
     state.selectedCheckOut = "";
     setBookingStatus("Entrada selecionada. Escolha a saída.", "");

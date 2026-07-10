@@ -32,7 +32,12 @@ const BR_STATES = [
 
 const accountButton = document.getElementById("accountButton");
 const accountAvatar = document.getElementById("accountAvatar");
+const accountBadge = document.getElementById("accountBadge");
 const siteHeader = document.getElementById("siteHeader");
+
+function isProfileComplete(profile) {
+  return Boolean(profile?.name && profile?.phone && profile?.cpf);
+}
 
 const authModal = document.getElementById("authModal");
 const closeAuthModal = document.getElementById("closeAuthModal");
@@ -199,6 +204,8 @@ if (accountButton && authModal && accountPanel) {
     if (accountViewEmail) accountViewEmail.textContent = profile.email || "";
     setAvatar(accountViewAvatar, profile.photoURL);
     if (adminPanelLink) adminPanelLink.hidden = profile.email !== OWNER_EMAIL;
+    const incompleteHint = document.getElementById("profileIncompleteHint");
+    if (incompleteHint) incompleteHint.hidden = isProfileComplete(profile);
     if (passwordSetup) {
       const hasPassword = auth.currentUser?.providerData?.some((p) => p.providerId === "password") ?? true;
       passwordSetup.hidden = hasPassword;
@@ -233,6 +240,7 @@ if (accountButton && authModal && accountPanel) {
     localStorage.setItem("userProfile", JSON.stringify(profile));
     setAvatar(accountAvatar, profile.photoURL);
     accountButton.setAttribute("aria-label", profile.name ? `Minha conta, ${profile.name.split(" ")[0]}` : "Minha conta");
+    if (accountBadge) accountBadge.hidden = isProfileComplete(profile);
   }
 
   accountButton.addEventListener("click", async () => {
@@ -385,6 +393,7 @@ if (accountButton && authModal && accountPanel) {
   logoutButton?.addEventListener("click", async () => {
     await signOut(auth);
     localStorage.removeItem("userProfile");
+    if (accountBadge) accountBadge.hidden = true;
     closeAccountPanelFn();
   });
 
@@ -393,6 +402,7 @@ if (accountButton && authModal && accountPanel) {
       setAvatar(accountAvatar, null);
       accountButton.setAttribute("aria-label", "Entrar");
       localStorage.removeItem("userProfile");
+      if (accountBadge) accountBadge.hidden = true;
       return;
     }
     applyProfile(await fetchProfile(user));

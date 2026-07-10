@@ -66,6 +66,7 @@
             <button class="nav__account" type="button" id="accountButton" aria-haspopup="dialog" aria-label="Entrar">
               <svg class="icon"><use href="#icon-menu"></use></svg>
               <span class="nav__account-avatar" id="accountAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
+              <span class="nav__account-badge" id="accountBadge" hidden aria-hidden="true">⚠️</span>
             </button>
           </div>
         </div>
@@ -232,6 +233,7 @@
           <p class="eyebrow">Minha conta</p>
           <h2>Seus dados</h2>
           <p>Mantenha suas informações atualizadas para agilizar suas próximas reservas.</p>
+          <p class="field-hint is-error" id="profileIncompleteHint" hidden>⚠️ Complete seus dados (telefone e CPF) para poder reservar.</p>
           <form class="auth-form" id="profileForm">
             <label><span>Nome completo</span><input type="text" id="profileName" autocomplete="name" required></label>
             <label><span>Telefone</span><input type="tel" id="profilePhone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required></label>

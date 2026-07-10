@@ -678,6 +678,10 @@ function getStoredProfile() {
   }
 }
 
+function isProfileComplete(profile) {
+  return Boolean(profile && profile.name && profile.phone && profile.cpf);
+}
+
 function setupBooking() {
   const todayISO = toISO(startOfDay(new Date()));
   const checkInInput = document.getElementById("checkInInput");
@@ -727,7 +731,7 @@ function setupBooking() {
   };
 
   openBookingPanel?.addEventListener("click", () => {
-    if (!getStoredProfile()) {
+    if (!isProfileComplete(getStoredProfile())) {
       document.getElementById("accountButton")?.click();
       return;
     }
@@ -958,8 +962,8 @@ function submitReservation(form) {
     document.getElementById("accountButton")?.click();
     return;
   }
-  if (!profile.cpf) {
-    setFormStatus("Complete seu CPF em Minha conta para continuar (necessário para gerar o pagamento).", "error");
+  if (!isProfileComplete(profile)) {
+    setFormStatus("Complete seus dados (telefone e CPF) em Minha conta para continuar com a reserva.", "error");
     document.getElementById("accountButton")?.click();
     return;
   }

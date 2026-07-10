@@ -149,13 +149,10 @@ if (accountButton && authModal) {
     }
   });
 
-  console.log("[auth] checking getRedirectResult, currentUser at load:", auth.currentUser?.email || null);
   getRedirectResult(auth)
     .then(async (result) => {
-      console.log("[auth] getRedirectResult resolved:", result ? result.user.email : "null (no pending redirect)");
       if (!result) return;
       const profile = await fetchProfile(result.user);
-      console.log("[auth] fetched profile after redirect:", profile);
       applyProfile(profile);
       if (!profile.phone) {
         showAccountView(profile);
@@ -238,7 +235,6 @@ if (accountButton && authModal) {
   });
 
   onAuthStateChanged(auth, async (user) => {
-    console.log("[auth] onAuthStateChanged fired, user:", user?.email || null);
     if (!user) {
       accountLabel.textContent = "Entrar";
       localStorage.removeItem("userProfile");

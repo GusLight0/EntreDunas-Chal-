@@ -1207,7 +1207,6 @@ body.booking-open {
 }
 
 body.booking-open .mobile-nav,
-body.booking-open .whatsapp-float,
 body.booking-open .back-to-top {
   display: none;
 }
@@ -1217,7 +1216,6 @@ body.account-open {
 }
 
 body.account-open .mobile-nav,
-body.account-open .whatsapp-float,
 body.account-open .back-to-top {
   display: none;
 }
@@ -1226,7 +1224,6 @@ body.profile-open {
   overflow: hidden;
 }
 
-body.profile-open .whatsapp-float,
 body.profile-open .back-to-top {
   display: none;
 }
@@ -2759,6 +2756,10 @@ textarea:focus {
   z-index: 90;
   right: 18px;
   border-radius: 50%;
+}
+
+.whatsapp-float {
+  z-index: 120;
 }
 
 .whatsapp-float {

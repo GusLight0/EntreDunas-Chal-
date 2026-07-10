@@ -958,6 +958,11 @@ function submitReservation(form) {
     document.getElementById("accountButton")?.click();
     return;
   }
+  if (!profile.cpf) {
+    setFormStatus("Complete seu CPF em Minha conta para continuar (necessário para gerar o pagamento).", "error");
+    document.getElementById("accountButton")?.click();
+    return;
+  }
 
   const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
   const nights = getSelectedNights();
@@ -968,6 +973,7 @@ function submitReservation(form) {
   const data = {
     name: profile.name || "",
     phone: profile.phone || "",
+    cpf: (profile.cpf || "").replace(/\D/g, ""),
     email: profile.email || "",
     city: profile.city || "",
     state: (profile.state || "").toUpperCase(),
@@ -1008,6 +1014,7 @@ function submitReservation(form) {
     total,
     name: data.name,
     phone: data.phone,
+    cpf: data.cpf,
     email: data.email,
     city: data.city,
     state: data.state,
@@ -1213,6 +1220,7 @@ function setupPaymentPage() {
           name: payload.name,
           phone: payload.phone,
           email: payload.email,
+          cpf: payload.cpf,
           paymentMethod: selectedPaymentMethod
         })
       });

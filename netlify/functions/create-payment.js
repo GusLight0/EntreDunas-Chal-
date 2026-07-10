@@ -22,9 +22,10 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "JSON inválido" }) };
   }
 
-  const { checkInISO, checkOutISO, guests, discountCode, name, phone, email, paymentMethod } = payload;
+  const { checkInISO, checkOutISO, guests, discountCode, name, phone, email, cpf, paymentMethod } = payload;
+  const cpfDigits = (cpf || "").replace(/\D/g, "");
 
-  if (!checkInISO || !checkOutISO || !name || !email) {
+  if (!checkInISO || !checkOutISO || !name || !email || cpfDigits.length !== 11) {
     return { statusCode: 400, body: JSON.stringify({ error: "Dados incompletos" }) };
   }
 
@@ -50,6 +51,7 @@ exports.handler = async (event) => {
       name,
       phone: phone || "",
       email,
+      cpf: cpfDigits,
       status: "pending",
       paymentId: "",
       paymentMethod: "",
@@ -69,7 +71,7 @@ exports.handler = async (event) => {
             currency_id: "BRL"
           }
         ],
-        payer: { name, email },
+        payer: { name, email, identification: { type: "CPF", number: cpfDigits } },
         payment_methods: {
           installments: 3,
           ...(PAYMENT_TYPE_FILTERS[paymentMethod]

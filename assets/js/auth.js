@@ -70,11 +70,37 @@ if (accountButton && authModal && accountPanel) {
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   }
 
+  function formatCpf(value) {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+  }
+
+  function isValidCpf(value) {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length !== 11 || /^(\d)\1{10}$/.test(digits)) return false;
+    let sum = 0;
+    for (let i = 0; i < 9; i++) sum += Number(digits[i]) * (10 - i);
+    let check1 = (sum * 10) % 11;
+    if (check1 === 10) check1 = 0;
+    if (check1 !== Number(digits[9])) return false;
+    sum = 0;
+    for (let i = 0; i < 10; i++) sum += Number(digits[i]) * (11 - i);
+    let check2 = (sum * 10) % 11;
+    if (check2 === 10) check2 = 0;
+    return check2 === Number(digits[10]);
+  }
+
   document.getElementById("signupPhone")?.addEventListener("input", (event) => {
     event.target.value = formatPhone(event.target.value);
   });
   document.getElementById("profilePhone")?.addEventListener("input", (event) => {
     event.target.value = formatPhone(event.target.value);
+  });
+  document.getElementById("profileCpf")?.addEventListener("input", (event) => {
+    event.target.value = formatCpf(event.target.value);
   });
 
   const profileFields = profileForm ? Array.from(profileForm.querySelectorAll("input, select")) : [];
@@ -165,6 +191,7 @@ if (accountButton && authModal && accountPanel) {
   function fillAccountPanel(profile) {
     document.getElementById("profileName").value = profile.name || "";
     document.getElementById("profilePhone").value = profile.phone || "";
+    document.getElementById("profileCpf").value = profile.cpf || "";
     document.getElementById("profileEmail").value = profile.email || "";
     document.getElementById("profileCity").value = profile.city || "";
     if (profileState) profileState.value = profile.state || "";
@@ -238,7 +265,7 @@ if (accountButton && authModal && accountPanel) {
       const profile = await fetchProfile(result.user);
       applyProfile(profile);
       closeModal();
-      if (!profile.phone) openAccountPanel(profile);
+      if (!profile.phone || !profile.cpf) openAccountPanel(profile);
     } catch (error) {
       if (error?.code === "auth/popup-closed-by-user") return;
       if (error?.code === "auth/popup-blocked") {
@@ -256,7 +283,7 @@ if (accountButton && authModal && accountPanel) {
       const profile = await fetchProfile(result.user);
       applyProfile(profile);
       closeModal();
-      if (!profile.phone) openAccountPanel(profile);
+      if (!profile.phone || !profile.cpf) openAccountPanel(profile);
     })
     .catch((error) => {
       console.error("Google redirect sign-in error:", error?.code, error?.message);
@@ -309,16 +336,21 @@ if (accountButton && authModal && accountPanel) {
     if (!user) return;
     const name = document.getElementById("profileName").value.trim();
     const phone = document.getElementById("profilePhone").value.trim();
+    const cpf = document.getElementById("profileCpf").value.trim();
     const city = document.getElementById("profileCity").value.trim();
     const state = profileState?.value || "";
+    if (!isValidCpf(cpf)) {
+      showToast("CPF inválido. Confira os números e tente de novo.", "error");
+      return;
+    }
     try {
       await setDoc(
         doc(db, "users", user.uid),
-        { name, phone, city, state, email: user.email, updatedAt: new Date().toISOString() },
+        { name, phone, cpf, city, state, email: user.email, updatedAt: new Date().toISOString() },
         { merge: true }
       );
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
-      applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
+      applyProfile({ name, phone, cpf, city, state, email: user.email, photoURL: user.photoURL || null });
       if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
       profileFields.forEach((field) => field.classList.add("is-saved"));
       if (profileSaveButton) profileSaveButton.disabled = true;

@@ -1,6 +1,7 @@
 import { auth, db } from "./firebase-init.js";
 import {
   GoogleAuthProvider,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   createUserWithEmailAndPassword,
@@ -129,8 +130,20 @@ if (accountButton && authModal) {
 
   googleSignInButton?.addEventListener("click", async () => {
     try {
-      await signInWithRedirect(auth, new GoogleAuthProvider());
+      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      const profile = await fetchProfile(result.user);
+      applyProfile(profile);
+      if (!profile.phone) {
+        showAccountView(profile);
+      } else {
+        closeModal();
+      }
     } catch (error) {
+      if (error?.code === "auth/popup-closed-by-user") return;
+      if (error?.code === "auth/popup-blocked") {
+        await signInWithRedirect(auth, new GoogleAuthProvider());
+        return;
+      }
       console.error("Google sign-in error:", error?.code, error?.message);
       document.getElementById("loginError").textContent = authErrorMessage(error);
     }

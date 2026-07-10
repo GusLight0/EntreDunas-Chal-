@@ -8,6 +8,8 @@ import {
   signInWithEmailAndPassword,
   EmailAuthProvider,
   linkWithCredential,
+  RecaptchaVerifier,
+  linkWithPhoneNumber,
   signOut,
   onAuthStateChanged,
   updateProfile
@@ -32,6 +34,7 @@ const BR_STATES = [
 
 const accountButton = document.getElementById("accountButton");
 const accountAvatar = document.getElementById("accountAvatar");
+const accountBadge = document.getElementById("accountBadge");
 const siteHeader = document.getElementById("siteHeader");
 
 const authModal = document.getElementById("authModal");
@@ -53,6 +56,9 @@ const logoutButton = document.getElementById("logoutButton");
 const adminPanelLink = document.getElementById("adminPanelLink");
 const passwordSetup = document.getElementById("passwordSetup");
 const setPasswordForm = document.getElementById("setPasswordForm");
+const phoneVerify = document.getElementById("phoneVerify");
+const phoneSendForm = document.getElementById("phoneSendForm");
+const phoneConfirmForm = document.getElementById("phoneConfirmForm");
 
 if (accountButton && authModal && accountPanel) {
   BR_STATES.forEach(([uf, name]) => {
@@ -68,6 +74,37 @@ if (accountButton && authModal && accountPanel) {
     if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
     if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  }
+
+  function toE164BR(value) {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length !== 10 && digits.length !== 11) return null;
+    return `+55${digits}`;
+  }
+
+  function isPhoneVerified(profile) {
+    return !!profile.phoneVerified && !!profile.phone && profile.phoneVerifiedNumber === profile.phone;
+  }
+
+  let recaptchaVerifier = null;
+  let phoneConfirmationResult = null;
+  let currentProfile = null;
+
+  function updatePhoneUI(profile) {
+    const verified = isPhoneVerified(profile);
+    if (accountBadge) accountBadge.hidden = verified;
+    if (phoneVerify) {
+      phoneVerify.hidden = verified || !profile.phone;
+      if (phoneSendForm) phoneSendForm.hidden = false;
+      if (phoneConfirmForm) phoneConfirmForm.hidden = true;
+      const sendError = document.getElementById("phoneSendError");
+      const confirmError = document.getElementById("phoneConfirmError");
+      if (sendError) sendError.textContent = "";
+      if (confirmError) confirmError.textContent = "";
+      const phoneCodeInput = document.getElementById("phoneCode");
+      if (phoneCodeInput) phoneCodeInput.value = "";
+    }
+    phoneConfirmationResult = null;
   }
 
   document.getElementById("signupPhone")?.addEventListener("input", (event) => {
@@ -101,7 +138,14 @@ if (accountButton && authModal && accountPanel) {
       "auth/unauthorized-domain": "Este site ainda não está autorizado no Firebase (Authentication > Settings > Authorized domains).",
       "auth/operation-not-allowed": "Esse método de login ainda não está habilitado no Firebase (Authentication > Sign-in method).",
       "auth/requires-recent-login": "Por segurança, saia e entre de novo com o Google antes de criar uma senha.",
-      "auth/credential-already-in-use": "Essa senha já está associada a outra conta."
+      "auth/credential-already-in-use": "Essa senha já está associada a outra conta.",
+      "auth/invalid-phone-number": "Número de telefone inválido. Confira o DDD e o número.",
+      "auth/missing-phone-number": "Informe um telefone antes de verificar.",
+      "auth/quota-exceeded": "Limite de envio de SMS atingido por agora. Tente novamente mais tarde.",
+      "auth/captcha-check-failed": "Falha na verificação de segurança. Atualize a página e tente de novo.",
+      "auth/code-expired": "O código expirou. Peça um novo código.",
+      "auth/invalid-verification-code": "Código incorreto. Confira e tente de novo.",
+      "auth/provider-already-linked": "Esse telefone já está vinculado a essa conta."
     };
     return map[error?.code] || `Não foi possível concluir (${error?.code || "erro desconhecido"}). Tente novamente.`;
   }
@@ -163,6 +207,7 @@ if (accountButton && authModal && accountPanel) {
   }
 
   function fillAccountPanel(profile) {
+    currentProfile = profile;
     document.getElementById("profileName").value = profile.name || "";
     document.getElementById("profilePhone").value = profile.phone || "";
     document.getElementById("profileEmail").value = profile.email || "";
@@ -176,6 +221,7 @@ if (accountButton && authModal && accountPanel) {
       const hasPassword = auth.currentUser?.providerData?.some((p) => p.providerId === "password") ?? true;
       passwordSetup.hidden = hasPassword;
     }
+    updatePhoneUI(profile);
   }
 
   function openAccountPanel(profile) {
@@ -206,6 +252,7 @@ if (accountButton && authModal && accountPanel) {
     localStorage.setItem("userProfile", JSON.stringify(profile));
     setAvatar(accountAvatar, profile.photoURL);
     accountButton.setAttribute("aria-label", profile.name ? `Minha conta, ${profile.name.split(" ")[0]}` : "Minha conta");
+    if (accountBadge) accountBadge.hidden = isPhoneVerified(profile);
   }
 
   accountButton.addEventListener("click", async () => {
@@ -311,20 +358,82 @@ if (accountButton && authModal && accountPanel) {
     const phone = document.getElementById("profilePhone").value.trim();
     const city = document.getElementById("profileCity").value.trim();
     const state = profileState?.value || "";
+    const phoneChanged = phone !== (currentProfile?.phoneVerifiedNumber || "");
     try {
       await setDoc(
         doc(db, "users", user.uid),
-        { name, phone, city, state, email: user.email, updatedAt: new Date().toISOString() },
+        {
+          name, phone, city, state, email: user.email, updatedAt: new Date().toISOString(),
+          ...(phoneChanged ? { phoneVerified: false } : {})
+        },
         { merge: true }
       );
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
-      applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
+      const updatedProfile = {
+        name, phone, city, state, email: user.email, photoURL: user.photoURL || null,
+        phoneVerified: phoneChanged ? false : currentProfile?.phoneVerified,
+        phoneVerifiedNumber: currentProfile?.phoneVerifiedNumber
+      };
+      applyProfile(updatedProfile);
+      updatePhoneUI(updatedProfile);
       if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
       profileFields.forEach((field) => field.classList.add("is-saved"));
       if (profileSaveButton) profileSaveButton.disabled = true;
       showToast("Dados salvos com sucesso!");
     } catch (error) {
       showToast("Não foi possível salvar agora. Tente de novo.", "error");
+    }
+  });
+
+  phoneSendForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+    const phone = document.getElementById("profilePhone").value.trim();
+    const errorEl = document.getElementById("phoneSendError");
+    errorEl.textContent = "";
+    const e164 = toE164BR(phone);
+    if (!e164) {
+      errorEl.textContent = "Telefone inválido. Confira o DDD e o número.";
+      return;
+    }
+    try {
+      if (!recaptchaVerifier) {
+        recaptchaVerifier = new RecaptchaVerifier(auth, "recaptchaContainer", { size: "invisible" });
+      }
+      phoneConfirmationResult = await linkWithPhoneNumber(user, e164, recaptchaVerifier);
+      phoneSendForm.hidden = true;
+      if (phoneConfirmForm) phoneConfirmForm.hidden = false;
+      showToast("Código enviado por SMS!");
+    } catch (error) {
+      console.error("Phone verification send error:", error?.code, error?.message);
+      errorEl.textContent = authErrorMessage(error);
+      recaptchaVerifier?.clear();
+      recaptchaVerifier = null;
+    }
+  });
+
+  phoneConfirmForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const user = auth.currentUser;
+    if (!user || !phoneConfirmationResult) return;
+    const code = document.getElementById("phoneCode").value.trim();
+    const errorEl = document.getElementById("phoneConfirmError");
+    errorEl.textContent = "";
+    try {
+      await phoneConfirmationResult.confirm(code);
+      const phone = document.getElementById("profilePhone").value.trim();
+      await setDoc(
+        doc(db, "users", user.uid),
+        { phoneVerified: true, phoneVerifiedNumber: phone, updatedAt: new Date().toISOString() },
+        { merge: true }
+      );
+      const profile = await fetchProfile(user);
+      applyProfile(profile);
+      updatePhoneUI(profile);
+      showToast("Telefone verificado com sucesso!");
+    } catch (error) {
+      errorEl.textContent = authErrorMessage(error);
     }
   });
 

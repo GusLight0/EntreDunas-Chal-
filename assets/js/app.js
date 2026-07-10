@@ -10,8 +10,7 @@ const CONFIG = {
   // Starter coupon list — add/edit codes and values (R$) as needed.
   discountCodes: {
     BEMVINDO10: 40,
-    LENCOIS15: 60,
-    TESTEREAL475: 475
+    LENCOIS15: 60
   }
 };
 

@@ -8,8 +8,7 @@ const CONFIG = {
   longStayDiscountNights: 7,
   discountCodes: {
     BEMVINDO10: 40,
-    LENCOIS15: 60,
-    TESTEREAL475: 475
+    LENCOIS15: 60
   }
 };
 

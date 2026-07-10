@@ -2174,6 +2174,75 @@ textarea:focus {
   gap: 14px;
 }
 
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.confirm-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 26, 21, 0.5);
+}
+
+.confirm-modal__panel {
+  position: relative;
+  width: min(360px, 100%);
+  padding: 30px 26px 26px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(18, 26, 21, 0.28);
+  animation: confirmModalIn 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes confirmModalIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.confirm-modal__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  font-size: 24px;
+  background: color-mix(in srgb, #bd3a3a 12%, transparent);
+  border-radius: 50%;
+}
+
+.confirm-modal__panel h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.confirm-modal__panel p {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.confirm-modal__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-modal__actions .button {
+  flex: 1 1 0;
+}
+
+@media (max-width: 420px) {
+  .confirm-modal__actions {
+    flex-direction: column-reverse;
+  }
+}
+
 .auth-form .button {
   width: 100%;
   margin-top: 2px;
@@ -2371,6 +2440,43 @@ textarea:focus {
 @media (max-width: 760px) {
   .account-panel {
     inset: var(--header-height) 0 calc(78px + env(safe-area-inset-bottom)) 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-panel__visual {
+    min-height: 130px;
+  }
+
+  .account-panel__visual-overlay {
+    padding: 22px 20px;
+  }
+
+  .account-panel__avatar {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+  }
+
+  .account-panel__avatar .icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .account-panel__visual-overlay h2 {
+    font-size: 1.15rem;
+  }
+
+  .account-panel__visual-overlay p {
+    font-size: 0.8rem;
+  }
+
+  .account-panel__content {
+    padding: 22px 18px 40px;
+  }
+
+  .account-panel__content > h2 {
+    font-size: 1.3rem;
   }
 }
 
@@ -3078,6 +3184,30 @@ textarea:focus {
 
   .back-to-top {
     bottom: calc(168px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-panel__top {
+    padding: 16px 0 4px;
+  }
+
+  .booking-panel__top > div {
+    padding-right: 44px;
+  }
+
+  .booking-panel__top h3 {
+    font-size: 1.2rem;
+  }
+
+  .booking-panel__top p:last-child {
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .booking-panel__close {
+    width: 36px;
+    height: 36px;
   }
 }
 

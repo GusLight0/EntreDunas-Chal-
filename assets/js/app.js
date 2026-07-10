@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupGallery();
   setupLightbox();
   setupBooking();
+  setupCompleteProfileModal();
   setupReviews();
   setupFaq();
   setupFloatingActions();
@@ -682,6 +683,30 @@ function isProfileComplete(profile) {
   return Boolean(profile && profile.name && profile.phone && profile.cpf);
 }
 
+function showCompleteProfileModal() {
+  document.getElementById("completeProfileModal")?.removeAttribute("hidden");
+}
+
+function hideCompleteProfileModal() {
+  document.getElementById("completeProfileModal")?.setAttribute("hidden", "");
+}
+
+function setupCompleteProfileModal() {
+  const modal = document.getElementById("completeProfileModal");
+  if (!modal) return;
+
+  modal.querySelectorAll("[data-confirm-close]").forEach((el) => el.addEventListener("click", hideCompleteProfileModal));
+
+  document.getElementById("completeProfileConfirm")?.addEventListener("click", () => {
+    hideCompleteProfileModal();
+    document.getElementById("accountButton")?.click();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) hideCompleteProfileModal();
+  });
+}
+
 function setupBooking() {
   const todayISO = toISO(startOfDay(new Date()));
   const checkInInput = document.getElementById("checkInInput");
@@ -732,7 +757,7 @@ function setupBooking() {
 
   openBookingPanel?.addEventListener("click", () => {
     if (!isProfileComplete(getStoredProfile())) {
-      document.getElementById("accountButton")?.click();
+      showCompleteProfileModal();
       return;
     }
     showBookingPanel();
@@ -957,14 +982,8 @@ function submitReservation(form) {
   }
 
   const profile = getStoredProfile();
-  if (!profile) {
-    setFormStatus("Entre na sua conta para continuar com a reserva.", "error");
-    document.getElementById("accountButton")?.click();
-    return;
-  }
   if (!isProfileComplete(profile)) {
-    setFormStatus("Complete seus dados (telefone e CPF) em Minha conta para continuar com a reserva.", "error");
-    document.getElementById("accountButton")?.click();
+    showCompleteProfileModal();
     return;
   }
 

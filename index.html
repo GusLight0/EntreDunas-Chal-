@@ -143,9 +143,9 @@
             </a>
           </div>
 
-          <button class="nav__account" type="button" id="accountButton" aria-haspopup="dialog">
-            <svg class="icon"><use href="#icon-user"></use></svg>
-            <span id="accountLabel">Entrar</span>
+          <button class="nav__account" type="button" id="accountButton" aria-haspopup="dialog" aria-label="Entrar">
+            <svg class="icon"><use href="#icon-menu"></use></svg>
+            <span class="nav__account-avatar" id="accountAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
           </button>
         </div>
       </nav>
@@ -667,8 +667,13 @@
         </div>
 
         <div id="authAccountView" hidden>
-          <p class="eyebrow">Minha conta</p>
-          <h3>Seus dados</h3>
+          <div class="account-summary">
+            <span class="account-summary__avatar" id="accountViewAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
+            <div>
+              <p class="eyebrow">Minha conta</p>
+              <h3 id="accountViewGreeting">Seus dados</h3>
+            </div>
+          </div>
           <form class="auth-form" id="profileForm">
             <label><span>Nome completo</span><input type="text" id="profileName" autocomplete="name" required></label>
             <label><span>Telefone</span><input type="tel" id="profilePhone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required></label>

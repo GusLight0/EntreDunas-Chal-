@@ -19,7 +19,9 @@ import {
 const OWNER_EMAIL = "entredunaschale@gmail.com";
 
 const accountButton = document.getElementById("accountButton");
-const accountLabel = document.getElementById("accountLabel");
+const accountAvatar = document.getElementById("accountAvatar");
+const accountViewAvatar = document.getElementById("accountViewAvatar");
+const accountViewGreeting = document.getElementById("accountViewGreeting");
 const authModal = document.getElementById("authModal");
 const closeAuthModal = document.getElementById("closeAuthModal");
 const guestView = document.getElementById("authGuestView");
@@ -73,6 +75,20 @@ if (accountButton && authModal) {
     document.getElementById("signupError").textContent = "";
   }
 
+  function setAvatar(container, photoURL) {
+    if (!container) return;
+    container.innerHTML = "";
+    if (photoURL) {
+      const img = document.createElement("img");
+      img.src = photoURL;
+      img.alt = "";
+      img.referrerPolicy = "no-referrer";
+      container.appendChild(img);
+    } else {
+      container.innerHTML = '<svg class="icon"><use href="#icon-user"></use></svg>';
+    }
+  }
+
   function showAccountView(profile) {
     guestView.hidden = true;
     accountView.hidden = false;
@@ -80,6 +96,8 @@ if (accountButton && authModal) {
     document.getElementById("profilePhone").value = profile.phone || "";
     document.getElementById("profileEmail").value = profile.email || "";
     document.getElementById("profileStatus").textContent = "";
+    if (accountViewGreeting) accountViewGreeting.textContent = profile.name ? `Olá, ${profile.name.split(" ")[0]}` : "Seus dados";
+    setAvatar(accountViewAvatar, profile.photoURL);
     if (adminPanelLink) adminPanelLink.hidden = profile.email !== OWNER_EMAIL;
   }
 
@@ -95,13 +113,14 @@ if (accountButton && authModal) {
 
   async function fetchProfile(user) {
     const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) return { ...snap.data(), email: user.email };
-    return { name: user.displayName || "", phone: "", email: user.email };
+    if (snap.exists()) return { ...snap.data(), email: user.email, photoURL: user.photoURL || null };
+    return { name: user.displayName || "", phone: "", email: user.email, photoURL: user.photoURL || null };
   }
 
   function applyProfile(profile) {
     localStorage.setItem("userProfile", JSON.stringify(profile));
-    if (accountLabel) accountLabel.textContent = profile.name ? profile.name.split(" ")[0] : "Minha conta";
+    setAvatar(accountAvatar, profile.photoURL);
+    accountButton.setAttribute("aria-label", profile.name ? `Minha conta, ${profile.name.split(" ")[0]}` : "Minha conta");
   }
 
   accountButton.addEventListener("click", async () => {
@@ -198,7 +217,7 @@ if (accountButton && authModal) {
         email,
         updatedAt: new Date().toISOString()
       });
-      applyProfile({ name, phone, email });
+      applyProfile({ name, phone, email, photoURL: null });
       closeModal();
     } catch (error) {
       errorEl.textContent = authErrorMessage(error);
@@ -219,7 +238,7 @@ if (accountButton && authModal) {
         { merge: true }
       );
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
-      applyProfile({ name, phone, email: user.email });
+      applyProfile({ name, phone, email: user.email, photoURL: user.photoURL || null });
       statusEl.textContent = "Salvo!";
       statusEl.className = "field-hint is-success";
     } catch (error) {
@@ -236,7 +255,8 @@ if (accountButton && authModal) {
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      accountLabel.textContent = "Entrar";
+      setAvatar(accountAvatar, null);
+      accountButton.setAttribute("aria-label", "Entrar");
       localStorage.removeItem("userProfile");
       return;
     }

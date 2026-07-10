@@ -108,6 +108,17 @@ if (accountButton && authModal && accountPanel) {
     event.target.value = formatCpf(event.target.value);
   });
 
+  document.querySelectorAll("[data-password-toggle]").forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const input = document.getElementById(toggle.dataset.passwordToggle);
+      if (!input) return;
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      toggle.querySelector("use").setAttribute("href", isHidden ? "#icon-eye-off" : "#icon-eye");
+      toggle.setAttribute("aria-label", isHidden ? "Ocultar senha" : "Mostrar senha");
+    });
+  });
+
   const profileFields = profileForm ? Array.from(profileForm.querySelectorAll("input, select")) : [];
   profileFields.forEach((field) => {
     field.addEventListener("input", () => {

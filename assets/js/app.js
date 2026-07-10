@@ -8,9 +8,7 @@ const CONFIG = {
   reservedDates: [],
   blockedDates: [],
   // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
-  discountCodes: {
-    PRIMEIRARESERVA2026: { percent: 5 }
-  }
+  discountCodes: {}
 };
 
 

@@ -11,7 +11,7 @@ const CONFIG = {
   discountCodes: {
     BEMVINDO10: 40,
     LENCOIS15: 60,
-    TESTEREAL479: 479
+    TESTEREAL475: 475
   }
 };
 

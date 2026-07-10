@@ -5,7 +5,10 @@ const CONFIG = {
   maxGuests: 6,
   longStayDiscountPercent: 0,
   longStayDiscountNights: 7,
-  reservedDates: [],
+  reservedDates: [
+    "2026-07-11", "2026-07-12", "2026-07-13", "2026-07-14", "2026-07-15",
+    "2026-07-16", "2026-07-17", "2026-07-18", "2026-07-19", "2026-07-20"
+  ],
   blockedDates: [],
   // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
   discountCodes: {}

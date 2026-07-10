@@ -72,6 +72,12 @@ if (accountButton && authModal && accountPanel) {
     event.target.value = formatPhone(event.target.value);
   });
 
+  const profileFields = profileForm ? Array.from(profileForm.querySelectorAll("input, select")) : [];
+  profileFields.forEach((field) => {
+    field.addEventListener("input", () => field.classList.remove("is-saved"));
+    field.addEventListener("change", () => field.classList.remove("is-saved"));
+  });
+
   function authErrorMessage(error) {
     const map = {
       "auth/invalid-credential": "E-mail ou senha incorretos.",
@@ -297,6 +303,7 @@ if (accountButton && authModal && accountPanel) {
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
       applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
       if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
+      profileFields.forEach((field) => field.classList.add("is-saved"));
       showToast("Dados salvos com sucesso!");
     } catch (error) {
       showToast("Não foi possível salvar agora. Tente de novo.", "error");

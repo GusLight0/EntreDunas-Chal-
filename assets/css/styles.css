@@ -1343,6 +1343,12 @@ textarea:focus {
   background: var(--surface);
 }
 
+#profileForm input.is-saved,
+#profileForm select.is-saved {
+  color: var(--green-strong);
+  border-color: var(--green);
+}
+
 .field-hint {
   min-height: 16px;
   font-weight: 500;

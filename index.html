@@ -334,34 +334,9 @@
             <div class="booking-form-row reveal">
               <form class="reservation-form" id="reservationForm" novalidate>
                 <div class="form-full-grid">
-                  <label>
-                    <span>Nome completo</span>
-                    <input type="text" id="nameInput" name="name" autocomplete="name" required>
-                  </label>
-                  <label>
-                    <span>Telefone</span>
-                    <input type="tel" id="phoneInput" name="phone" inputmode="numeric" autocomplete="tel" placeholder="(00) 00000-0000" maxlength="16" required>
-                  </label>
-                  <label>
-                    <span>Email</span>
-                    <input type="email" id="emailInput" name="email" autocomplete="email" required>
-                  </label>
-                  <div class="form-grid">
-                    <label>
-                      <span>Cidade</span>
-                      <input type="text" id="cityInput" name="city" list="cityOptions" autocomplete="address-level2" required>
-                      <datalist id="cityOptions"></datalist>
-                    </label>
-                    <label>
-                      <span>Estado</span>
-                      <select id="stateInput" name="state" autocomplete="address-level1" required>
-                        <option value="" disabled selected>UF</option>
-                      </select>
-                    </label>
-                  </div>
                   <label class="form-full-span">
                     <span>Observações</span>
-                    <textarea id="notesInput" name="notes" rows="3"></textarea>
+                    <textarea id="notesInput" name="notes" rows="3" placeholder="Horário previsto de chegada, alguma necessidade especial, etc. (opcional)"></textarea>
                   </label>
                 </div>
                 <div class="form-bottom-row">

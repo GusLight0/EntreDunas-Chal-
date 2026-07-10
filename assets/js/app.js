@@ -14,48 +14,6 @@ const CONFIG = {
   }
 };
 
-// Starter dataset for the state/city selects. Maranhão has broad coverage since
-// that is where the property is; other states list the capital plus a few major
-// cities. Expand freely — this is a first pass, not an exhaustive IBGE list.
-const BRAZIL_STATES = [
-  { uf: "AC", name: "Acre", cities: ["Rio Branco", "Cruzeiro do Sul", "Sena Madureira"] },
-  { uf: "AL", name: "Alagoas", cities: ["Maceió", "Arapiraca", "Palmeira dos Índios"] },
-  { uf: "AP", name: "Amapá", cities: ["Macapá", "Santana"] },
-  { uf: "AM", name: "Amazonas", cities: ["Manaus", "Parintins", "Itacoatiara"] },
-  { uf: "BA", name: "Bahia", cities: ["Salvador", "Feira de Santana", "Ilhéus", "Porto Seguro", "Vitória da Conquista"] },
-  { uf: "CE", name: "Ceará", cities: ["Fortaleza", "Juazeiro do Norte", "Sobral", "Crato"] },
-  { uf: "DF", name: "Distrito Federal", cities: ["Brasília"] },
-  { uf: "ES", name: "Espírito Santo", cities: ["Vitória", "Vila Velha", "Serra", "Guarapari"] },
-  { uf: "GO", name: "Goiás", cities: ["Goiânia", "Anápolis", "Caldas Novas"] },
-  {
-    uf: "MA",
-    name: "Maranhão",
-    cities: [
-      "São Luís", "Barreirinhas", "Santo Amaro do Maranhão", "Paulino Neves", "Tutóia",
-      "Humberto de Campos", "Primeira Cruz", "Água Doce do Maranhão", "Urbano Santos",
-      "Chapadinha", "Buriti", "Icatu", "Axixá", "Rosário", "Bacabeira", "Morros",
-      "Cedral", "Cururupu", "Imperatriz", "Caxias", "Codó", "Timon", "Bacabal",
-      "Balsas", "Açailândia", "Santa Inês", "Pinheiro", "Pedreiras", "Coroatá"
-    ]
-  },
-  { uf: "MT", name: "Mato Grosso", cities: ["Cuiabá", "Várzea Grande", "Rondonópolis"] },
-  { uf: "MS", name: "Mato Grosso do Sul", cities: ["Campo Grande", "Dourados", "Bonito"] },
-  { uf: "MG", name: "Minas Gerais", cities: ["Belo Horizonte", "Uberlândia", "Juiz de Fora", "Contagem", "Ouro Preto"] },
-  { uf: "PA", name: "Pará", cities: ["Belém", "Ananindeua", "Santarém", "Marabá"] },
-  { uf: "PB", name: "Paraíba", cities: ["João Pessoa", "Campina Grande"] },
-  { uf: "PR", name: "Paraná", cities: ["Curitiba", "Londrina", "Maringá", "Foz do Iguaçu"] },
-  { uf: "PE", name: "Pernambuco", cities: ["Recife", "Olinda", "Caruaru", "Petrolina"] },
-  { uf: "PI", name: "Piauí", cities: ["Teresina", "Parnaíba"] },
-  { uf: "RJ", name: "Rio de Janeiro", cities: ["Rio de Janeiro", "Niterói", "Petrópolis", "Nova Iguaçu", "Angra dos Reis"] },
-  { uf: "RN", name: "Rio Grande do Norte", cities: ["Natal", "Mossoró"] },
-  { uf: "RS", name: "Rio Grande do Sul", cities: ["Porto Alegre", "Caxias do Sul", "Pelotas", "Gramado"] },
-  { uf: "RO", name: "Rondônia", cities: ["Porto Velho", "Ji-Paraná"] },
-  { uf: "RR", name: "Roraima", cities: ["Boa Vista"] },
-  { uf: "SC", name: "Santa Catarina", cities: ["Florianópolis", "Joinville", "Blumenau", "Balneário Camboriú"] },
-  { uf: "SP", name: "São Paulo", cities: ["São Paulo", "Campinas", "Santos", "Guarulhos", "Ribeirão Preto", "São José dos Campos"] },
-  { uf: "SE", name: "Sergipe", cities: ["Aracaju", "Itabaiana"] },
-  { uf: "TO", name: "Tocantins", cities: ["Palmas", "Araguaína"] }
-];
 
 const galleryImages = [
   {
@@ -712,6 +670,14 @@ function updateLightbox() {
   });
 }
 
+function getStoredProfile() {
+  try {
+    return JSON.parse(localStorage.getItem("userProfile") || "null");
+  } catch {
+    return null;
+  }
+}
+
 function setupBooking() {
   const todayISO = toISO(startOfDay(new Date()));
   const checkInInput = document.getElementById("checkInInput");
@@ -733,25 +699,6 @@ function setupBooking() {
     if (event.key === "Escape") hideBookingPanel();
   };
 
-  const prefillFromProfile = () => {
-    try {
-      const profile = JSON.parse(localStorage.getItem("userProfile") || "null");
-      if (!profile) return;
-      const nameField = document.getElementById("nameInput");
-      const phoneField = document.getElementById("phoneInput");
-      const emailField = document.getElementById("emailInput");
-      const cityField = document.getElementById("cityInput");
-      const stateField = document.getElementById("stateInput");
-      if (nameField && !nameField.value && profile.name) nameField.value = profile.name;
-      if (phoneField && !phoneField.value && profile.phone) phoneField.value = profile.phone;
-      if (emailField && !emailField.value && profile.email) emailField.value = profile.email;
-      if (cityField && !cityField.value && profile.city) cityField.value = profile.city;
-      if (stateField && !stateField.value && profile.state) stateField.value = profile.state;
-    } catch {
-      /* localStorage indisponível ou dado inválido, ignora */
-    }
-  };
-
   const showBookingPanel = () => {
     if (!bookingPanel) return;
 
@@ -765,7 +712,6 @@ function setupBooking() {
     document.addEventListener("keydown", onPanelKeydown);
     requestAnimationFrame(renderCalendar);
     window.setTimeout(() => checkInInput.focus({ preventScroll: true }), 120);
-    prefillFromProfile();
   };
 
   const hideBookingPanel = () => {
@@ -780,7 +726,13 @@ function setupBooking() {
     openBookingPanel?.focus({ preventScroll: true });
   };
 
-  openBookingPanel?.addEventListener("click", showBookingPanel);
+  openBookingPanel?.addEventListener("click", () => {
+    if (!getStoredProfile()) {
+      document.getElementById("accountButton")?.click();
+      return;
+    }
+    showBookingPanel();
+  });
   closeBookingPanel?.addEventListener("click", hideBookingPanel);
 
   checkInInput.min = todayISO;
@@ -849,39 +801,6 @@ function setupBooking() {
     discountInput.setSelectionRange(cursor, cursor);
     updateDiscountHint();
     updateBookingSummary();
-  });
-
-  const phoneInput = document.getElementById("phoneInput");
-  phoneInput?.addEventListener("input", () => {
-    phoneInput.value = formatBRPhone(phoneInput.value);
-  });
-
-  const stateInput = document.getElementById("stateInput");
-  const cityInput = document.getElementById("cityInput");
-  const cityOptions = document.getElementById("cityOptions");
-
-  BRAZIL_STATES.forEach(({ uf, name }) => {
-    const option = document.createElement("option");
-    option.value = uf;
-    option.textContent = `${uf} — ${name}`;
-    stateInput?.appendChild(option);
-  });
-
-  const fillCityOptions = (cities) => {
-    if (!cityOptions) return;
-    cityOptions.innerHTML = "";
-    cities.forEach((city) => {
-      const option = document.createElement("option");
-      option.value = city;
-      cityOptions.appendChild(option);
-    });
-  };
-
-  fillCityOptions(BRAZIL_STATES.flatMap((entry) => entry.cities));
-
-  stateInput?.addEventListener("change", () => {
-    const selected = BRAZIL_STATES.find((entry) => entry.uf === stateInput.value);
-    fillCityOptions(selected ? selected.cities : BRAZIL_STATES.flatMap((entry) => entry.cities));
   });
 
   document.getElementById("prevMonth")?.addEventListener("click", () => {
@@ -1033,6 +952,13 @@ function submitReservation(form) {
     return;
   }
 
+  const profile = getStoredProfile();
+  if (!profile) {
+    setFormStatus("Entre na sua conta para continuar com a reserva.", "error");
+    document.getElementById("accountButton")?.click();
+    return;
+  }
+
   const guests = clamp(Number(document.getElementById("guestInput").value || 1), 1, CONFIG.maxGuests);
   const nights = getSelectedNights();
   const subtotal = nights * CONFIG.baseRate;
@@ -1040,11 +966,11 @@ function submitReservation(form) {
   const discountCode = getDiscountCode();
   const total = getSelectedTotal();
   const data = {
-    name: document.getElementById("nameInput").value.trim(),
-    phone: document.getElementById("phoneInput").value.trim(),
-    email: document.getElementById("emailInput").value.trim(),
-    city: document.getElementById("cityInput").value.trim(),
-    state: document.getElementById("stateInput").value.trim().toUpperCase(),
+    name: profile.name || "",
+    phone: profile.phone || "",
+    email: profile.email || "",
+    city: profile.city || "",
+    state: (profile.state || "").toUpperCase(),
     notes: document.getElementById("notesInput").value.trim()
   };
 
@@ -1054,7 +980,7 @@ function submitReservation(form) {
     `Nome: ${data.name}`,
     `Telefone: ${data.phone}`,
     `Email: ${data.email}`,
-    `Cidade/Estado: ${data.city} - ${data.state}`,
+    ...(data.city || data.state ? [`Cidade/Estado: ${data.city}${data.city && data.state ? " - " : ""}${data.state}`] : []),
     `Entrada: ${formatISO(state.selectedCheckIn)}`,
     `Saída: ${formatISO(state.selectedCheckOut)}`,
     `Número de hóspedes: ${guests}`,
@@ -1383,19 +1309,6 @@ function updateDiscountHint() {
   }
 }
 
-function formatBRPhone(value) {
-  const digits = value.replace(/\D/g, "").slice(0, 11);
-  if (digits.length === 0) return "";
-
-  const ddd = digits.slice(0, 2);
-  if (digits.length <= 2) return `(${ddd}`;
-
-  const rest = digits.slice(2);
-  const splitAt = digits.length <= 10 ? 4 : 5;
-  const first = rest.slice(0, splitAt);
-  const second = rest.slice(splitAt);
-  return second ? `(${ddd}) ${first}-${second}` : `(${ddd}) ${first}`;
-}
 
 function isSelectable(iso) {
   if (!iso) return false;

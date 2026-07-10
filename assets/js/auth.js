@@ -101,6 +101,23 @@ if (accountButton && authModal && accountPanel) {
     }
   }
 
+  let toastTimeout;
+
+  function showToast(message, type = "success") {
+    let toast = document.getElementById("appToast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "appToast";
+      toast.className = "toast";
+      toast.setAttribute("role", "status");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.className = `toast is-${type} is-visible`;
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove("is-visible"), 3000);
+  }
+
   function showGuestView() {
     tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.authTab === "login"));
     loginForm.hidden = false;
@@ -132,7 +149,6 @@ if (accountButton && authModal && accountPanel) {
     document.getElementById("profileEmail").value = profile.email || "";
     document.getElementById("profileCity").value = profile.city || "";
     if (profileState) profileState.value = profile.state || "";
-    document.getElementById("profileStatus").textContent = "";
     if (accountViewGreeting) accountViewGreeting.textContent = profile.name ? `Olá, ${profile.name.split(" ")[0]}` : "Olá";
     if (accountViewEmail) accountViewEmail.textContent = profile.email || "";
     setAvatar(accountViewAvatar, profile.photoURL);
@@ -272,7 +288,6 @@ if (accountButton && authModal && accountPanel) {
     const phone = document.getElementById("profilePhone").value.trim();
     const city = document.getElementById("profileCity").value.trim();
     const state = profileState?.value || "";
-    const statusEl = document.getElementById("profileStatus");
     try {
       await setDoc(
         doc(db, "users", user.uid),
@@ -282,10 +297,9 @@ if (accountButton && authModal && accountPanel) {
       if (user.displayName !== name) await updateProfile(user, { displayName: name });
       applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
       if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
-      statusEl.textContent = "Salvo!";
-      statusEl.className = "field-hint is-success";
+      showToast("Dados salvos com sucesso!");
     } catch (error) {
-      statusEl.textContent = "Não foi possível salvar agora. Tente de novo.";
+      showToast("Não foi possível salvar agora. Tente de novo.", "error");
       statusEl.className = "field-hint is-error";
     }
   });

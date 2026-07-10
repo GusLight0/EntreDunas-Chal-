@@ -2089,6 +2089,43 @@ textarea:focus {
   margin-top: 2px;
 }
 
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  padding: 14px 22px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.92rem;
+  background: var(--green-strong);
+  border-radius: 999px;
+  box-shadow: 0 16px 34px rgba(18, 26, 21, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast.is-error {
+  background: #bd3a3a;
+}
+
+@media (max-width: 760px) {
+  .toast {
+    bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+}
+
 .account-panel {
   position: fixed;
   inset: var(--header-height) 0 0 0;

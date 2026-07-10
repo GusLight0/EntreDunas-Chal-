@@ -764,6 +764,12 @@ function setupBooking() {
   });
   closeBookingPanel?.addEventListener("click", hideBookingPanel);
 
+  document.querySelectorAll('.nav__menu a[href^="#"], .mobile-nav__item[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      if (bookingPanel && !bookingPanel.hidden) hideBookingPanel();
+    });
+  });
+
   checkInInput.min = todayISO;
   checkOutInput.min = todayISO;
   guestInput.max = CONFIG.maxGuests;

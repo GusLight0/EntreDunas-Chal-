@@ -82,6 +82,8 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error("create-payment-asaas error:", error);
-    return { statusCode: 500, body: JSON.stringify({ error: "Falha ao criar pagamento" }) };
+    // TEMP (debug, sandbox branch only): expõe error.message na resposta pra facilitar o
+    // diagnóstico do teste em preview. Reverter para a mensagem genérica antes de ir pra produção.
+    return { statusCode: 500, body: JSON.stringify({ error: "Falha ao criar pagamento", debug: error.message }) };
   }
 };

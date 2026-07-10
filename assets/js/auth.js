@@ -45,6 +45,7 @@ const accountViewAvatar = document.getElementById("accountViewAvatar");
 const accountViewGreeting = document.getElementById("accountViewGreeting");
 const accountViewEmail = document.getElementById("accountViewEmail");
 const profileForm = document.getElementById("profileForm");
+const profileSaveButton = document.getElementById("profileSaveButton");
 const profileState = document.getElementById("profileState");
 const logoutButton = document.getElementById("logoutButton");
 const adminPanelLink = document.getElementById("adminPanelLink");
@@ -74,16 +75,22 @@ if (accountButton && authModal && accountPanel) {
 
   const profileFields = profileForm ? Array.from(profileForm.querySelectorAll("input, select")) : [];
   profileFields.forEach((field) => {
-    field.addEventListener("input", () => field.classList.remove("is-saved"));
-    field.addEventListener("change", () => field.classList.remove("is-saved"));
+    field.addEventListener("input", () => {
+      field.classList.remove("is-saved");
+      if (profileSaveButton) profileSaveButton.disabled = false;
+    });
+    field.addEventListener("change", () => {
+      field.classList.remove("is-saved");
+      if (profileSaveButton) profileSaveButton.disabled = false;
+    });
   });
 
   function authErrorMessage(error) {
     const map = {
-      "auth/invalid-credential": "E-mail ou senha incorretos.",
-      "auth/wrong-password": "E-mail ou senha incorretos.",
+      "auth/invalid-credential": "E-mail ou senha incorretos. Se você criou a conta pelo Google, use o botão \"Continuar com Google\".",
+      "auth/wrong-password": "E-mail ou senha incorretos. Se você criou a conta pelo Google, use o botão \"Continuar com Google\".",
       "auth/user-not-found": "Não encontramos uma conta com esse e-mail.",
-      "auth/email-already-in-use": "Já existe uma conta com esse e-mail. Tente entrar.",
+      "auth/email-already-in-use": "Já existe uma conta com esse e-mail. Tente entrar (ou use \"Continuar com Google\" se foi assim que você criou a conta).",
       "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres.",
       "auth/invalid-email": "E-mail inválido.",
       "auth/too-many-requests": "Muitas tentativas. Tente novamente em alguns minutos.",
@@ -304,10 +311,10 @@ if (accountButton && authModal && accountPanel) {
       applyProfile({ name, phone, city, state, email: user.email, photoURL: user.photoURL || null });
       if (accountViewGreeting) accountViewGreeting.textContent = name ? `Olá, ${name.split(" ")[0]}` : "Olá";
       profileFields.forEach((field) => field.classList.add("is-saved"));
+      if (profileSaveButton) profileSaveButton.disabled = true;
       showToast("Dados salvos com sucesso!");
     } catch (error) {
       showToast("Não foi possível salvar agora. Tente de novo.", "error");
-      statusEl.className = "field-hint is-error";
     }
   });
 

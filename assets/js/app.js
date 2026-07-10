@@ -1222,7 +1222,7 @@ function setupPaymentPage() {
   const payNowButton = document.getElementById("payNow");
   payNowButton?.addEventListener("click", async () => {
     if (!selectedPaymentMethod) {
-      if (methodHint) methodHint.textContent = "Escolha Pix, débito ou crédito pra continuar.";
+      if (methodHint) methodHint.textContent = "Escolha Pix ou cartão pra continuar.";
       return;
     }
 
@@ -1232,7 +1232,7 @@ function setupPaymentPage() {
     if (label) label.textContent = "Processando...";
 
     try {
-      const response = await fetch("/.netlify/functions/create-payment", {
+      const response = await fetch("/.netlify/functions/create-payment-asaas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

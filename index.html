@@ -88,6 +88,7 @@
       <symbol id="icon-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></symbol>
       <symbol id="icon-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
       <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="icon-alert-triangle" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
       <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
       <symbol id="icon-bed" viewBox="0 0 24 24"><path d="M3 11h18v7H3z"/><path d="M3 11V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M9 11v-2h10v2"/></symbol>
       <symbol id="icon-fan" viewBox="0 0 24 24"><path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z"/><path d="M12 12v.01"/></symbol>
@@ -147,7 +148,7 @@
           <button class="nav__account" type="button" id="accountButton" aria-haspopup="dialog" aria-label="Entrar">
             <svg class="icon"><use href="#icon-menu"></use></svg>
             <span class="nav__account-avatar" id="accountAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
-            <span class="nav__account-badge" id="accountBadge" hidden aria-hidden="true">⚠️</span>
+            <span class="nav__account-badge" id="accountBadge" hidden aria-hidden="true"><svg class="icon"><use href="#icon-alert-triangle"></use></svg></span>
           </button>
         </div>
       </nav>
@@ -645,7 +646,7 @@
     <div class="confirm-modal" id="completeProfileModal" hidden>
       <div class="confirm-modal__backdrop" data-confirm-close></div>
       <div class="confirm-modal__panel" role="alertdialog" aria-modal="true" aria-labelledby="completeProfileTitle">
-        <span class="confirm-modal__icon" aria-hidden="true">⚠️</span>
+        <span class="confirm-modal__icon" aria-hidden="true"><svg class="icon"><use href="#icon-alert-triangle"></use></svg></span>
         <h3 id="completeProfileTitle">Complete seu cadastro</h3>
         <p>Para solicitar uma reserva, complete seu telefone e CPF em Minha conta.</p>
         <div class="confirm-modal__actions">
@@ -717,34 +718,39 @@
           <p class="eyebrow">Minha conta</p>
           <h2>Seus dados</h2>
           <p>Mantenha suas informações atualizadas para agilizar suas próximas reservas.</p>
-          <p class="field-hint is-error" id="profileIncompleteHint" hidden>⚠️ Complete seus dados (telefone e CPF) para poder reservar.</p>
-          <form class="auth-form" id="profileForm">
-            <label><span>Nome completo</span><input type="text" id="profileName" autocomplete="name" required></label>
-            <label><span>Telefone</span><input type="tel" id="profilePhone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required></label>
-            <label><span>CPF</span><input type="text" id="profileCpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required></label>
-            <label><span>E-mail</span><input type="email" id="profileEmail" disabled></label>
-            <div class="form-grid">
-              <label><span>Cidade</span><input type="text" id="profileCity" autocomplete="address-level2"></label>
-              <label>
-                <span>Estado</span>
-                <select id="profileState" autocomplete="address-level1">
-                  <option value="" selected>UF</option>
-                </select>
-              </label>
-            </div>
-            <button class="button button--primary" type="submit" id="profileSaveButton"><span>Salvar</span></button>
-          </form>
-
-          <div class="password-setup" id="passwordSetup" hidden>
-            <p class="eyebrow">Segurança</p>
-            <h3>Criar uma senha</h3>
-            <p>Sua conta usa login pelo Google. Defina uma senha para também poder entrar com e-mail e senha.</p>
-            <form class="auth-form" id="setPasswordForm">
-              <label><span>Nova senha</span><input type="password" id="newPassword" autocomplete="new-password" minlength="6" required></label>
-              <label><span>Confirmar senha</span><input type="password" id="confirmPassword" autocomplete="new-password" minlength="6" required></label>
-              <p class="field-hint" id="setPasswordError"></p>
-              <button class="button button--outline" type="submit"><span>Criar senha</span></button>
+          <div class="profile-alert" id="profileIncompleteHint" hidden role="status">
+            <svg class="icon"><use href="#icon-alert-triangle"></use></svg>
+            <span>Complete seus dados (telefone e CPF) para poder reservar.</span>
+          </div>
+          <div class="account-panel__forms">
+            <form class="auth-form" id="profileForm">
+              <label><span>Nome completo</span><input type="text" id="profileName" autocomplete="name" required></label>
+              <label><span>Telefone</span><input type="tel" id="profilePhone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required></label>
+              <label><span>CPF</span><input type="text" id="profileCpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required></label>
+              <label><span>E-mail</span><input type="email" id="profileEmail" disabled></label>
+              <div class="form-grid">
+                <label><span>Cidade</span><input type="text" id="profileCity" autocomplete="address-level2"></label>
+                <label>
+                  <span>Estado</span>
+                  <select id="profileState" autocomplete="address-level1">
+                    <option value="" selected>UF</option>
+                  </select>
+                </label>
+              </div>
+              <button class="button button--primary" type="submit" id="profileSaveButton"><span>Salvar</span></button>
             </form>
+
+            <div class="password-setup" id="passwordSetup" hidden>
+              <p class="eyebrow">Segurança</p>
+              <h3>Criar uma senha</h3>
+              <p>Sua conta usa login pelo Google. Defina uma senha para também poder entrar com e-mail e senha.</p>
+              <form class="auth-form" id="setPasswordForm">
+                <label><span>Nova senha</span><input type="password" id="newPassword" autocomplete="new-password" minlength="6" required></label>
+                <label><span>Confirmar senha</span><input type="password" id="confirmPassword" autocomplete="new-password" minlength="6" required></label>
+                <p class="field-hint" id="setPasswordError"></p>
+                <button class="button button--outline" type="submit"><span>Criar senha</span></button>
+              </form>
+            </div>
           </div>
 
           <a class="button button--outline" href="admin.html" id="adminPanelLink" hidden>

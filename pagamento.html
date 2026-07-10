@@ -43,6 +43,8 @@
       <symbol id="icon-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
       <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
       <symbol id="icon-alert-triangle" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="icon-eye-off" viewBox="0 0 24 24"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 1 12s4 8 11 8a9.26 9.26 0 0 0 5.39-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" x2="22" y1="2" y2="22"/></symbol>
       <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
     </svg>
 
@@ -112,24 +114,18 @@
             <div class="payment-main reveal">
               <div class="payment-notice">
                 <svg class="icon"><use href="#icon-lock"></use></svg>
-                <p>O pagamento acontece no ambiente seguro do <strong>Asaas</strong>. Escolha abaixo como prefere pagar.</p>
+                <p>O pagamento acontece no ambiente seguro do <strong>Asaas</strong>, via Pix.</p>
               </div>
 
               <p class="payment-status" id="paymentStatus" hidden></p>
 
-              <div class="payment-method-select" role="radiogroup" aria-label="Forma de pagamento">
-                <p class="payment-method-select__label">Como você quer pagar?</p>
+              <div class="payment-method-select">
                 <div class="payment-method-options">
-                  <button class="payment-method-option" type="button" data-method="pix" aria-pressed="false">
+                  <span class="payment-method-option is-static" aria-hidden="true">
                     <svg class="icon"><use href="#icon-qr-code"></use></svg>
                     <span>Pix</span>
-                  </button>
-                  <button class="payment-method-option" type="button" data-method="credito" aria-pressed="false">
-                    <svg class="icon"><use href="#icon-credit-card"></use></svg>
-                    <span>Cartão</span>
-                  </button>
+                  </span>
                 </div>
-                <small class="field-hint" id="paymentMethodHint"></small>
               </div>
             </div>
 
@@ -292,8 +288,24 @@
               <h3>Criar uma senha</h3>
               <p>Sua conta usa login pelo Google. Defina uma senha para também poder entrar com e-mail e senha.</p>
               <form class="auth-form" id="setPasswordForm">
-                <label><span>Nova senha</span><input type="password" id="newPassword" autocomplete="new-password" minlength="6" required></label>
-                <label><span>Confirmar senha</span><input type="password" id="confirmPassword" autocomplete="new-password" minlength="6" required></label>
+                <label>
+                  <span>Nova senha</span>
+                  <div class="password-field">
+                    <input type="password" id="newPassword" autocomplete="new-password" minlength="6" required>
+                    <button class="password-toggle" type="button" data-password-toggle="newPassword" aria-label="Mostrar senha">
+                      <svg class="icon"><use href="#icon-eye"></use></svg>
+                    </button>
+                  </div>
+                </label>
+                <label>
+                  <span>Confirmar senha</span>
+                  <div class="password-field">
+                    <input type="password" id="confirmPassword" autocomplete="new-password" minlength="6" required>
+                    <button class="password-toggle" type="button" data-password-toggle="confirmPassword" aria-label="Mostrar senha">
+                      <svg class="icon"><use href="#icon-eye"></use></svg>
+                    </button>
+                  </div>
+                </label>
                 <p class="field-hint" id="setPasswordError"></p>
                 <button class="button button--outline" type="submit"><span>Criar senha</span></button>
               </form>

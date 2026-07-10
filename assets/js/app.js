@@ -1208,24 +1208,10 @@ function setupPaymentPage() {
     showPaymentStatus("O pagamento não foi concluído. Você pode tentar novamente ou combinar pelo WhatsApp.", "error");
   }
 
-  let selectedPaymentMethod = null;
-  const methodButtons = Array.from(document.querySelectorAll(".payment-method-option"));
-  const methodHint = document.getElementById("paymentMethodHint");
-  methodButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      selectedPaymentMethod = btn.dataset.method;
-      methodButtons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
-      if (methodHint) methodHint.textContent = "";
-    });
-  });
+  const selectedPaymentMethod = "pix";
 
   const payNowButton = document.getElementById("payNow");
   payNowButton?.addEventListener("click", async () => {
-    if (!selectedPaymentMethod) {
-      if (methodHint) methodHint.textContent = "Escolha Pix ou cartão pra continuar.";
-      return;
-    }
-
     const label = payNowButton.querySelector("span");
     const originalLabel = label?.textContent;
     payNowButton.disabled = true;

@@ -3,9 +3,7 @@ const { calculateTotal } = require("./_lib/pricing");
 const { findOrCreateCustomer, createPayment } = require("./_lib/asaasClient");
 
 const BILLING_TYPE = {
-  pix: "PIX",
-  debito: "CREDIT_CARD",
-  credito: "CREDIT_CARD"
+  pix: "PIX"
 };
 
 exports.handler = async (event) => {

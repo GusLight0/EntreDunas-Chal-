@@ -7,7 +7,7 @@
     <meta name="description" content="Finalize sua reserva no Entre Dunas Chalé: confira o resumo da estadia e escolha entre Pix, débito ou crédito.">
     <meta name="robots" content="noindex, nofollow">
     <meta name="author" content="Entre Dunas Chalé">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com; frame-src https://www.google.com https://accounts.google.com https://entre-dunas.firebaseapp.com; connect-src 'self' https://*.googleapis.com https://apis.google.com https://www.gstatic.com https://www.google.com; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; frame-src https://www.google.com https://accounts.google.com https://entre-dunas.firebaseapp.com; connect-src 'self' https://*.googleapis.com https://apis.google.com https://www.gstatic.com; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com;">
 
     <title>Pagamento | Entre Dunas Chalé</title>
     <link rel="canonical" href="https://www.casabarreirinhas.com.br/pagamento.html">
@@ -64,7 +64,6 @@
             <button class="nav__account" type="button" id="accountButton" aria-haspopup="dialog" aria-label="Entrar">
               <svg class="icon"><use href="#icon-menu"></use></svg>
               <span class="nav__account-avatar" id="accountAvatar"><svg class="icon"><use href="#icon-user"></use></svg></span>
-              <span class="nav__account-badge" id="accountBadge" hidden aria-hidden="true">⚠️</span>
             </button>
           </div>
         </div>
@@ -283,22 +282,6 @@
             </div>
             <button class="button button--primary" type="submit" id="profileSaveButton"><span>Salvar</span></button>
           </form>
-
-          <div class="phone-verify" id="phoneVerify" hidden>
-            <p class="eyebrow">Telefone</p>
-            <h3>Verificar telefone</h3>
-            <p>Confirme que esse número é seu recebendo um código por SMS.</p>
-            <form class="auth-form" id="phoneSendForm">
-              <p class="field-hint" id="phoneSendError"></p>
-              <button class="button button--outline" type="submit"><span>Enviar código por SMS</span></button>
-            </form>
-            <form class="auth-form" id="phoneConfirmForm" hidden>
-              <label><span>Código recebido por SMS</span><input type="text" id="phoneCode" inputmode="numeric" maxlength="6" placeholder="000000" required></label>
-              <p class="field-hint" id="phoneConfirmError"></p>
-              <button class="button button--primary" type="submit"><span>Confirmar código</span></button>
-            </form>
-          </div>
-          <div id="recaptchaContainer"></div>
 
           <div class="password-setup" id="passwordSetup" hidden>
             <p class="eyebrow">Segurança</p>

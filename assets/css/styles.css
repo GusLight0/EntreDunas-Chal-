@@ -126,38 +126,25 @@ button {
   z-index: 999;
   display: grid;
   place-items: center;
-  gap: 18px;
   padding: 24px;
-  background:
-    radial-gradient(circle at top left, rgba(201, 162, 39, 0.16), transparent 30%),
-    linear-gradient(135deg, rgba(18, 58, 34, 0.97), rgba(30, 86, 49, 0.9));
   transition: opacity 420ms ease, visibility 420ms ease;
   overflow: hidden;
 }
 
-.loader::before,
-.loader::after {
+.loader__backdrop {
+  position: absolute;
+  inset: 0;
+  background: url("../img/quintal-varanda.jpeg") center/cover no-repeat;
+  animation: loaderZoom 9s ease-in-out infinite alternate;
+}
+
+.loader__backdrop::before {
   content: "";
   position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  animation: loaderPulse 7s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.loader::before {
-  width: 320px;
-  height: 320px;
-  top: -120px;
-  right: -120px;
-}
-
-.loader::after {
-  width: 280px;
-  height: 280px;
-  bottom: -140px;
-  left: -100px;
-  animation-delay: -3.2s;
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(201, 162, 39, 0.3), transparent 42%),
+    linear-gradient(160deg, rgba(10, 36, 20, 0.9), rgba(18, 58, 34, 0.82) 45%, rgba(10, 32, 19, 0.94));
 }
 
 .loader.is-hidden {
@@ -173,28 +160,39 @@ button {
   justify-items: center;
   gap: 16px;
   width: min(92vw, 420px);
-  padding: 30px 24px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 34px 28px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.26);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   animation: loaderCardIn 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .loader__logo-wrap {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 88px;
-  height: 88px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 0 0 1px rgba(18, 58, 34, 0.08), 0 12px 28px rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(18, 58, 34, 0.1), 0 14px 32px rgba(0, 0, 0, 0.22);
+}
+
+.loader__logo-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  animation: loaderRing 2.4s ease-out infinite;
 }
 
 .loader__logo {
-  width: 60px;
-  height: 60px;
+  width: 62px;
+  height: 62px;
   object-fit: contain;
 }
 
@@ -212,14 +210,15 @@ button {
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--gold);
 }
 
 .loader__brand {
   margin: 0;
-  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
   color: var(--white);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
 }
 
 .loader__text {
@@ -231,50 +230,31 @@ button {
 .loader__bar {
   width: 100%;
   max-width: 220px;
-  height: 6px;
+  height: 5px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 999px;
+  margin-top: 4px;
 }
 
 .loader__bar span {
   display: block;
   width: 45%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), var(--gold), rgba(255, 255, 255, 0.14));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), var(--gold), rgba(255, 255, 255, 0.2));
   border-radius: inherit;
   animation: loaderMove 1100ms ease-in-out infinite alternate;
-}
-
-.loader__dots {
-  display: flex;
-  gap: 6px;
-}
-
-.loader__dots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  animation: loaderDot 1.2s ease-in-out infinite;
-}
-
-.loader__dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loader__dots span:nth-child(3) {
-  animation-delay: 0.4s;
 }
 
 .loader__cta {
   position: relative;
   z-index: 1;
-  padding: 10px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: var(--white);
+  font-weight: 600;
   cursor: pointer;
   opacity: 0;
   transform: translateY(8px);
@@ -290,9 +270,18 @@ button {
 
 .loader__cta:hover,
 .loader__cta:focus-visible {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.24);
   transform: translateY(-2px);
   outline: none;
+}
+
+@keyframes loaderZoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
 }
 
 @keyframes loaderMove {
@@ -315,28 +304,40 @@ button {
   }
 }
 
-@keyframes loaderPulse {
-  0%,
-  100% {
-    transform: scale(0.95);
-    opacity: 0.55;
-  }
-  50% {
-    transform: scale(1.05);
+@keyframes loaderRing {
+  0% {
+    transform: scale(0.94);
     opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
   }
 }
 
-@keyframes loaderDot {
-  0%,
-  80%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.45;
+@media (max-height: 480px) {
+  .loader__card {
+    gap: 10px;
+    padding: 20px 22px 18px;
   }
-  40% {
-    transform: translateY(-4px);
-    opacity: 1;
+
+  .loader__logo-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .loader__logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .loader__eyebrow {
+    display: none;
+  }
+
+  .loader__brand {
+    font-size: 1.3rem;
   }
 }
 
@@ -3029,6 +3030,13 @@ textarea:focus {
   .nav {
     height: 64px;
     padding: 0 16px;
+  }
+
+  .nav__inner {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 12px;
   }
 
   .nav__brand span:last-child {

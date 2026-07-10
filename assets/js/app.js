@@ -7,10 +7,9 @@ const CONFIG = {
   longStayDiscountNights: 7,
   reservedDates: [],
   blockedDates: [],
-  // Starter coupon list — add/edit codes and values (R$) as needed.
+  // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
   discountCodes: {
-    BEMVINDO10: 40,
-    LENCOIS15: 60
+    PRIMEIRARESERVA2026: { percent: 5 }
   }
 };
 
@@ -1292,11 +1291,18 @@ function getSelectedTotal() {
   return Math.max(0, subtotal + CONFIG.cleaningFee - discount);
 }
 
+function resolveCodeDiscount(code, subtotal) {
+  const entry = CONFIG.discountCodes[code];
+  if (!entry) return 0;
+  if (typeof entry === "number") return entry;
+  return Math.round(subtotal * (entry.percent / 100));
+}
+
 function getSelectedDiscount(subtotal, nights = getSelectedNights()) {
   const automaticDiscount = nights >= CONFIG.longStayDiscountNights
     ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
     : 0;
-  const codeDiscount = CONFIG.discountCodes[getDiscountCode()] || 0;
+  const codeDiscount = resolveCodeDiscount(getDiscountCode(), subtotal);
   return clamp(Math.max(automaticDiscount, codeDiscount), 0, Math.max(0, subtotal + CONFIG.cleaningFee));
 }
 
@@ -1316,8 +1322,10 @@ function updateDiscountHint() {
     return;
   }
 
-  const value = CONFIG.discountCodes[code];
-  if (value) {
+  const entry = CONFIG.discountCodes[code];
+  if (entry) {
+    const subtotal = getSelectedNights() * CONFIG.baseRate;
+    const value = resolveCodeDiscount(code, subtotal);
     hint.textContent = `Cupom aplicado: -${money.format(value)}`;
     hint.className = "field-hint is-success";
   } else {

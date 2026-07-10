@@ -6,9 +6,9 @@ const CONFIG = {
   cleaningFee: 0,
   longStayDiscountPercent: 0,
   longStayDiscountNights: 7,
+  // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
   discountCodes: {
-    BEMVINDO10: 40,
-    LENCOIS15: 60
+    PRIMEIRARESERVA2026: { percent: 5 }
   }
 };
 
@@ -16,6 +16,13 @@ function diffDays(startISO, endISO) {
   const start = new Date(`${startISO}T00:00:00`);
   const end = new Date(`${endISO}T00:00:00`);
   return Math.round((end - start) / (1000 * 60 * 60 * 24));
+}
+
+function resolveCodeDiscount(code, subtotal) {
+  const entry = CONFIG.discountCodes[code];
+  if (!entry) return 0;
+  if (typeof entry === "number") return entry;
+  return Math.round(subtotal * (entry.percent / 100));
 }
 
 function calculateTotal({ checkInISO, checkOutISO, discountCode }) {
@@ -26,7 +33,7 @@ function calculateTotal({ checkInISO, checkOutISO, discountCode }) {
   const automaticDiscount = nights >= CONFIG.longStayDiscountNights
     ? Math.round(subtotal * CONFIG.longStayDiscountPercent)
     : 0;
-  const codeDiscount = CONFIG.discountCodes[code] || 0;
+  const codeDiscount = resolveCodeDiscount(code, subtotal);
   const discount = Math.min(Math.max(automaticDiscount, codeDiscount), subtotal + CONFIG.cleaningFee);
   const appliedCode = discount > 0 && codeDiscount === discount ? code : "";
 

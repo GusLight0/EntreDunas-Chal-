@@ -702,7 +702,7 @@ button {
 
 .hero {
   position: relative;
-  min-height: clamp(220px, 62svh, 720px);
+  min-height: clamp(220px, 67svh, 720px);
   display: grid;
   align-items: center;
   overflow: hidden;

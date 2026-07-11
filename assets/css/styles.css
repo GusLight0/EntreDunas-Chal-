@@ -636,19 +636,34 @@ button {
 
 .button--primary {
   color: #fff;
-  background: var(--green);
+  background: linear-gradient(135deg, var(--green), var(--green-strong));
   border-color: color-mix(in srgb, var(--green) 80%, #000);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--green-strong) 38%, transparent);
 }
 
 .button--primary:hover {
-  background: var(--green-strong);
+  background: linear-gradient(135deg, var(--green-strong), var(--green));
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--green-strong) 48%, transparent);
 }
 
 .button--glass {
   color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(16px);
+}
+
+.button--glass:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.hero__actions .button .icon {
+  transition: transform 200ms ease;
+}
+
+.hero__actions .button--glass:hover .icon {
+  transform: translateX(4px);
 }
 
 .button--outline {
@@ -687,7 +702,7 @@ button {
 
 .hero {
   position: relative;
-  min-height: clamp(220px, 80svh, 780px);
+  min-height: clamp(220px, 62svh, 720px);
   display: grid;
   align-items: center;
   overflow: hidden;
@@ -761,8 +776,27 @@ button {
   font-size: 3rem;
 }
 
-.hero .eyebrow {
-  color: color-mix(in srgb, var(--green) 30%, white);
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 8px 16px 8px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--green-strong);
+  background: color-mix(in srgb, var(--green-soft) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(6, 14, 9, 0.22);
+}
+
+.hero__badge .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--green);
 }
 
 .hero__lead {

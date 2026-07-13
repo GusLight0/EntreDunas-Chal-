@@ -11,7 +11,11 @@ const CONFIG = {
   ],
   blockedDates: [],
   // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
-  discountCodes: {}
+  discountCodes: {},
+  // Só pra exibir a prévia do acréscimo no cartão. O valor cobrado de verdade é
+  // sempre recalculado no servidor (netlify/functions/_lib/pricing.js).
+  cardSurchargePercent: 0.0299,
+  cardSurchargeFixed: 0.49
 };
 
 
@@ -1210,7 +1214,21 @@ function setupPaymentPage() {
     }
   }
 
-  document.getElementById("payTotal").textContent = money.format(payload.total);
+  const cardFeeRow = document.getElementById("payCardFeeRow");
+  const cardFeeEl = document.getElementById("payCardFee");
+  const payTotalEl = document.getElementById("payTotal");
+
+  function updatePaymentTotal(method) {
+    const isCard = method === "credito";
+    const cardFee = isCard
+      ? Math.round((payload.total * CONFIG.cardSurchargePercent + CONFIG.cardSurchargeFixed) * 100) / 100
+      : 0;
+    if (cardFeeRow) cardFeeRow.hidden = !isCard;
+    if (cardFeeEl && isCard) cardFeeEl.textContent = money.format(cardFee);
+    if (payTotalEl) payTotalEl.textContent = money.format(payload.total + cardFee);
+  }
+
+  updatePaymentTotal(null);
 
   const statusParam = new URLSearchParams(window.location.search).get("status");
   if (statusParam === "success") {
@@ -1221,10 +1239,25 @@ function setupPaymentPage() {
     showPaymentStatus("O pagamento não foi concluído. Você pode tentar novamente ou combinar pelo WhatsApp.", "error");
   }
 
-  const selectedPaymentMethod = "pix";
+  let selectedPaymentMethod = null;
+  const methodButtons = Array.from(document.querySelectorAll(".payment-method-option"));
+  const methodHint = document.getElementById("paymentMethodHint");
+  methodButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selectedPaymentMethod = btn.dataset.method;
+      methodButtons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      if (methodHint) methodHint.textContent = "";
+      updatePaymentTotal(selectedPaymentMethod);
+    });
+  });
 
   const payNowButton = document.getElementById("payNow");
   payNowButton?.addEventListener("click", async () => {
+    if (!selectedPaymentMethod) {
+      if (methodHint) methodHint.textContent = "Escolha Pix ou cartão pra continuar.";
+      return;
+    }
+
     const label = payNowButton.querySelector("span");
     const originalLabel = label?.textContent;
     payNowButton.disabled = true;

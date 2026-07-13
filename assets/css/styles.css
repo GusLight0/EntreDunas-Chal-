@@ -2037,17 +2037,6 @@ textarea:focus {
   color: #fff;
 }
 
-.payment-method-option.is-static {
-  color: #fff;
-  background: var(--green);
-  border-color: var(--green);
-  cursor: default;
-}
-
-.payment-method-option.is-static .icon {
-  color: #fff;
-}
-
 .payment-summary .button {
   width: 100%;
   margin-top: 4px;

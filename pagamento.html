@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1E5631">
-    <meta name="description" content="Finalize sua reserva no Entre Dunas Chalé: confira o resumo da estadia e escolha entre Pix, débito ou crédito.">
+    <meta name="description" content="Finalize sua reserva no Entre Dunas Chalé: confira o resumo da estadia e escolha entre Pix ou cartão de crédito.">
     <meta name="robots" content="noindex, nofollow">
     <meta name="author" content="Entre Dunas Chalé">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; frame-src https://www.google.com https://accounts.google.com https://entre-dunas.firebaseapp.com; connect-src 'self' https://*.googleapis.com https://apis.google.com https://www.gstatic.com; base-uri 'self'; form-action 'self' https://wa.me https://api.whatsapp.com;">
@@ -114,18 +114,25 @@
             <div class="payment-main reveal">
               <div class="payment-notice">
                 <svg class="icon"><use href="#icon-lock"></use></svg>
-                <p>O pagamento acontece no ambiente seguro do <strong>Asaas</strong>, via Pix.</p>
+                <p>O pagamento acontece no ambiente seguro do <strong>Asaas</strong>. Escolha abaixo como prefere pagar.</p>
               </div>
 
               <p class="payment-status" id="paymentStatus" hidden></p>
 
-              <div class="payment-method-select">
+              <div class="payment-method-select" role="radiogroup" aria-label="Forma de pagamento">
+                <p class="payment-method-select__label">Como você quer pagar?</p>
                 <div class="payment-method-options">
-                  <span class="payment-method-option is-static" aria-hidden="true">
+                  <button class="payment-method-option" type="button" data-method="pix" aria-pressed="false">
                     <svg class="icon"><use href="#icon-qr-code"></use></svg>
                     <span>Pix</span>
-                  </span>
+                  </button>
+                  <button class="payment-method-option" type="button" data-method="credito" aria-pressed="false">
+                    <svg class="icon"><use href="#icon-credit-card"></use></svg>
+                    <span>Cartão</span>
+                  </button>
                 </div>
+                <small class="field-hint" id="paymentMethodHint"></small>
+                <p class="summary-note">No cartão de crédito há acréscimo de 2,99% + R$ 0,49 sobre o valor da reserva (taxa da operadora). No Pix não há acréscimo.</p>
               </div>
             </div>
 
@@ -141,6 +148,7 @@
                 <div><dt>Diária</dt><dd id="payRate">R$ 0</dd></div>
                 <div><dt>Limpeza</dt><dd id="payCleaning">Inclusa</dd></div>
                 <div id="payDiscountRow" hidden><dt>Desconto</dt><dd id="payDiscount">R$ 0</dd></div>
+                <div id="payCardFeeRow" hidden><dt>Acréscimo cartão</dt><dd id="payCardFee">R$ 0</dd></div>
               </dl>
               <div class="summary-total">
                 <span>Total estimado</span>

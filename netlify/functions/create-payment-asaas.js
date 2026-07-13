@@ -3,7 +3,8 @@ const { calculateTotal } = require("./_lib/pricing");
 const { findOrCreateCustomer, createPayment } = require("./_lib/asaasClient");
 
 const BILLING_TYPE = {
-  pix: "PIX"
+  pix: "PIX",
+  credito: "CREDIT_CARD"
 };
 
 exports.handler = async (event) => {
@@ -26,7 +27,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Dados incompletos" }) };
   }
 
-  const pricing = calculateTotal({ checkInISO, checkOutISO, discountCode });
+  const pricing = calculateTotal({ checkInISO, checkOutISO, discountCode, paymentMethod });
 
   if (pricing.nights < 1) {
     return { statusCode: 400, body: JSON.stringify({ error: "Datas inválidas" }) };
@@ -45,6 +46,7 @@ exports.handler = async (event) => {
       discount: pricing.discount,
       discountCode: pricing.discountCode,
       total: pricing.total,
+      cardFee: pricing.cardFee,
       name,
       phone: phone || "",
       email,

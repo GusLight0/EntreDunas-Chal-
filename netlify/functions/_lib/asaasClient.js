@@ -29,10 +29,18 @@ async function findOrCreateCustomer({ name, email, cpfCnpj }) {
   });
 }
 
-async function createPayment({ customerId, billingType, value, dueDate, description, externalReference }) {
+async function createPayment({ customerId, billingType, value, dueDate, description, externalReference, callback }) {
   return asaasRequest("/payments", {
     method: "POST",
-    body: JSON.stringify({ customer: customerId, billingType, value, dueDate, description, externalReference })
+    body: JSON.stringify({
+      customer: customerId,
+      billingType,
+      value,
+      dueDate,
+      description,
+      externalReference,
+      ...(callback ? { callback } : {})
+    })
   });
 }
 

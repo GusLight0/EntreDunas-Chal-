@@ -1186,8 +1186,32 @@ function setupPaymentPage() {
 
   const emptyState = document.getElementById("paymentEmpty");
   const content = document.getElementById("paymentContent");
+  const successState = document.getElementById("paymentSuccess");
   const raw = sessionStorage.getItem("reservationPayload");
   const payload = raw ? JSON.parse(raw) : null;
+
+  const searchParams = new URLSearchParams(window.location.search);
+
+  if (searchParams.get("status") === "success") {
+    if (emptyState) emptyState.hidden = true;
+    if (content) content.hidden = true;
+    if (successState) {
+      successState.hidden = false;
+      const totalParam = Number(searchParams.get("total"));
+      const total = Number.isFinite(totalParam) && totalParam > 0 ? totalParam : payload?.total;
+      const summary = document.getElementById("paySuccessSummary");
+      if (payload && summary) {
+        summary.hidden = false;
+        document.getElementById("paySuccessName").textContent = payload.name;
+        document.getElementById("paySuccessCheckIn").textContent = payload.checkIn;
+        document.getElementById("paySuccessCheckOut").textContent = payload.checkOut;
+        document.getElementById("paySuccessTotal").textContent = money.format(total || 0);
+      }
+    }
+    return;
+  }
+
+  if (successState) successState.hidden = true;
 
   if (!payload) {
     if (emptyState) emptyState.hidden = false;
@@ -1230,10 +1254,8 @@ function setupPaymentPage() {
 
   updatePaymentTotal(null);
 
-  const statusParam = new URLSearchParams(window.location.search).get("status");
-  if (statusParam === "success") {
-    showPaymentStatus("Pagamento aprovado! Você vai receber a confirmação por e-mail e pelo WhatsApp em breve.", "success");
-  } else if (statusParam === "pending") {
+  const statusParam = searchParams.get("status");
+  if (statusParam === "pending") {
     showPaymentStatus("Pagamento em processamento. Assim que for aprovado, você recebe a confirmação.", "pending");
   } else if (statusParam === "failure") {
     showPaymentStatus("O pagamento não foi concluído. Você pode tentar novamente ou combinar pelo WhatsApp.", "error");

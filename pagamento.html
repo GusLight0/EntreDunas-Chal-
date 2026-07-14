@@ -46,6 +46,7 @@
       <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></symbol>
       <symbol id="icon-eye-off" viewBox="0 0 24 24"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 1 12s4 8 11 8a9.26 9.26 0 0 0 5.39-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" x2="22" y1="2" y2="22"/></symbol>
       <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></symbol>
+      <symbol id="icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5L16 9.5"/></symbol>
     </svg>
 
     <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -107,6 +108,22 @@
             <a class="button button--primary" href="index.html#disponibilidade">
               <span>Escolher datas</span>
               <svg class="icon"><use href="#icon-calendar"></use></svg>
+            </a>
+          </div>
+
+          <div class="payment-success" id="paymentSuccess" hidden>
+            <span class="payment-success__icon"><svg class="icon"><use href="#icon-check-circle"></use></svg></span>
+            <h2>Reserva confirmada!</h2>
+            <p>Recebemos seu pagamento. Você vai receber a confirmação por e-mail e pelo WhatsApp em breve.</p>
+            <dl class="summary-list payment-success__summary" id="paySuccessSummary" hidden>
+              <div><dt>Hóspede</dt><dd id="paySuccessName">—</dd></div>
+              <div><dt>Check-in</dt><dd id="paySuccessCheckIn">—</dd></div>
+              <div><dt>Check-out</dt><dd id="paySuccessCheckOut">—</dd></div>
+              <div><dt>Valor pago</dt><dd id="paySuccessTotal">—</dd></div>
+            </dl>
+            <a class="button button--primary" href="index.html#inicio">
+              <span>Voltar para o início</span>
+              <svg class="icon"><use href="#icon-home"></use></svg>
             </a>
           </div>
 

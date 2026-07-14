@@ -60,6 +60,7 @@ exports.handler = async (event) => {
 
     const customer = await findOrCreateCustomer({ name, email, cpfCnpj: cpfDigits });
 
+    const siteUrl = process.env.URL || `https://${event.headers.host}`;
     const todayISO = new Date().toISOString().slice(0, 10);
     const payment = await createPayment({
       customerId: customer.id,
@@ -67,7 +68,11 @@ exports.handler = async (event) => {
       value: pricing.total,
       dueDate: todayISO,
       description: "Reserva - Entre Dunas Chalé",
-      externalReference: reservationRef.id
+      externalReference: reservationRef.id,
+      callback: {
+        successUrl: `${siteUrl}/pagamento.html?status=success&total=${pricing.total}`,
+        autoRedirect: true
+      }
     });
 
     await reservationRef.update({ paymentId: String(payment.id) });

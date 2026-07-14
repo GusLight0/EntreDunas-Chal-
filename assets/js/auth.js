@@ -201,7 +201,11 @@ if (accountButton && authModal && accountPanel) {
   let headerWasScrolled = false;
 
   function onPanelKeydown(event) {
-    if (event.key === "Escape") closeAccountPanelFn();
+    if (event.key === "Escape") {
+      closeAccountPanelFn();
+      return;
+    }
+    window.trapTabWithinContainer?.(event, accountPanel);
   }
 
   function fillAccountPanel(profile) {
@@ -267,7 +271,12 @@ if (accountButton && authModal && accountPanel) {
   document.querySelectorAll("[data-auth-close]").forEach((el) => el.addEventListener("click", closeModal));
   closeAccountPanel?.addEventListener("click", closeAccountPanelFn);
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !authModal.hidden) closeModal();
+    if (authModal.hidden) return;
+    if (event.key === "Escape") {
+      closeModal();
+      return;
+    }
+    window.trapTabWithinContainer?.(event, authModal.querySelector(".auth-modal__panel"));
   });
 
   tabs.forEach((tab) => {

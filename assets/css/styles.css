@@ -413,8 +413,10 @@ button {
   color: #fff;
 }
 
+.site-header:not(.is-scrolled):not(.is-open) .nav__brand,
 .site-header:not(.is-scrolled):not(.is-open) .nav__menu a {
   color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
 .site-header.is-open .nav {
@@ -580,7 +582,7 @@ button {
   gap: 4px;
   min-height: 58px;
   padding: 8px 6px;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.1;
   color: var(--muted);
@@ -3266,6 +3268,12 @@ body.profile-open .whatsapp-float {
 
   .nav__menu {
     justify-content: center;
+    gap: 6px;
+  }
+
+  .nav__menu a {
+    min-width: 0;
+    padding: 10px 14px;
   }
 
   .hero h1 {
@@ -3474,6 +3482,7 @@ body.profile-open .whatsapp-float {
 
   .stay-card__pricebar {
     flex-wrap: wrap;
+    justify-content: flex-start;
     padding-top: 14px;
   }
 
@@ -3646,6 +3655,24 @@ body.profile-open .whatsapp-float {
 
   .calendar-legend {
     gap: 8px;
+  }
+
+  .booking-main,
+  .payment-main {
+    padding: 12px;
+  }
+
+  .calendar {
+    padding: 10px;
+  }
+
+  .calendar-grid {
+    gap: 3px;
+  }
+
+  .day {
+    min-height: 34px;
+    font-size: 0.78rem;
   }
 }
 

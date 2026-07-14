@@ -158,6 +158,27 @@ const state = {
   lightboxIndex: 0
 };
 
+function trapTabWithinContainer(event, container) {
+  if (event.key !== "Tab" || !container) return;
+
+  const focusable = [...container.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )].filter((el) => el.offsetParent !== null);
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+window.trapTabWithinContainer = trapTabWithinContainer;
+
 document.addEventListener("DOMContentLoaded", () => {
   setupLoader();
   setupHeader();
@@ -615,6 +636,7 @@ function setupLightbox() {
     if (event.key === "Escape") closeLightbox();
     if (event.key === "ArrowLeft") moveLightbox(-1);
     if (event.key === "ArrowRight") moveLightbox(1);
+    trapTabWithinContainer(event, lightbox.querySelector(".lightbox__content"));
   });
 }
 
@@ -707,7 +729,12 @@ function setupCompleteProfileModal() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modal.hidden) hideCompleteProfileModal();
+    if (modal.hidden) return;
+    if (event.key === "Escape") {
+      hideCompleteProfileModal();
+      return;
+    }
+    trapTabWithinContainer(event, modal.querySelector(".confirm-modal__panel"));
   });
 }
 
@@ -729,7 +756,11 @@ function setupBooking() {
   let headerWasScrolled = false;
 
   const onPanelKeydown = (event) => {
-    if (event.key === "Escape") hideBookingPanel();
+    if (event.key === "Escape") {
+      hideBookingPanel();
+      return;
+    }
+    trapTabWithinContainer(event, bookingPanel);
   };
 
   const showBookingPanel = () => {

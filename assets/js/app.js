@@ -953,8 +953,11 @@ function renderMonth(monthDate) {
     button.setAttribute("aria-label", shortDateFormatter.format(date));
 
     const unavailable = !isSelectable(iso);
-    if (reservedDates.has(iso)) button.classList.add("is-reserved");
-    if (blockedDates.has(iso)) button.classList.add("is-blocked");
+    const isPast = date < startOfDay(new Date());
+    if (!isPast) {
+      if (reservedDates.has(iso)) button.classList.add("is-reserved");
+      if (blockedDates.has(iso)) button.classList.add("is-blocked");
+    }
     if (isSameDay(date, new Date())) button.classList.add("is-today");
     if (iso === state.selectedCheckIn || iso === state.selectedCheckOut) button.classList.add("is-selected");
     if (isDateInRange(iso)) button.classList.add("is-range");

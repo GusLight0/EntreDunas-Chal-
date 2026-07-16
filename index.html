@@ -77,6 +77,8 @@
       <symbol id="icon-utensils" viewBox="0 0 24 24"><path d="M4 3v8"/><path d="M8 3v8"/><path d="M6 3v18"/><path d="M14 3v18"/><path d="M14 3a5 5 0 0 1 5 5v4h-5"/></symbol>
       <symbol id="icon-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></symbol>
       <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+      <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
       <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2l-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></symbol>
       <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7A2 2 0 0 1 22 16.9Z"/></symbol>
       <symbol id="icon-mail" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></symbol>
@@ -120,6 +122,18 @@
         </div>
       </div>
       <button class="loader__cta" type="button" id="loaderSkip">Entrar agora</button>
+    </div>
+
+    <div class="booking-alert" id="bookingAlert" role="status" aria-live="polite" hidden>
+      <button class="booking-alert__close" type="button" id="bookingAlertClose" aria-label="Fechar notificação">
+        <svg class="icon"><use href="#icon-x"></use></svg>
+      </button>
+      <span class="booking-alert__bell" aria-hidden="true"><svg class="icon"><use href="#icon-bell"></use></svg></span>
+      <img class="booking-alert__img" src="assets/img/frente-da-casa.jpeg" alt="" width="52" height="52">
+      <div class="booking-alert__text">
+        <strong>Novas datas disponíveis</strong>
+        <span>Faça sua reserva e garanta sua estadia.</span>
+      </div>
     </div>
 
     <header class="site-header" id="siteHeader">
@@ -233,7 +247,7 @@
               <div class="stay-card__body">
                 <div class="stay-card__heading">
                   <p class="eyebrow">Barreirinhas - MA</p>
-                  <h3>Casa Confortável</h3>
+                  <h3>Casa de temporadda</h3>
                 </div>
                 <div class="stay-card__facts" aria-label="Informações da casa">
                   <span><svg class="icon"><use href="#icon-users"></use></svg>Acomoda até 6 pessoas</span>
@@ -366,7 +380,7 @@
         <div class="container">
           <div class="section-heading reveal">
             <p class="eyebrow">Comodidades do Chalé</p>
-            <h2>O que este hotel oferece</h2>
+            <h2>O que ela oferece</h2>
           </div>
 
           <ul class="amenities-grid">
@@ -580,12 +594,24 @@
           <div class="section-copy reveal">
             <p class="eyebrow">Regras e dúvidas</p>
             <h2>Informações claras antes de confirmar.</h2>
-            <div class="rules-grid">
-              <span>Não fumar em ambientes internos</span>
-              <span>Respeitar horário de silêncio</span>
-              <span>Máximo de 6 hóspedes</span>
-              <span>Cuidar dos itens da casa</span>
-            </div>
+            <ul class="rules-grid">
+              <li class="rules-grid__item">
+                <span class="rules-grid__icon" aria-hidden="true"><svg class="icon"><use href="#icon-check"></use></svg></span>
+                <span>Não fumar em ambientes internos</span>
+              </li>
+              <li class="rules-grid__item">
+                <span class="rules-grid__icon" aria-hidden="true"><svg class="icon"><use href="#icon-check"></use></svg></span>
+                <span>Respeitar horário de silêncio</span>
+              </li>
+              <li class="rules-grid__item">
+                <span class="rules-grid__icon" aria-hidden="true"><svg class="icon"><use href="#icon-check"></use></svg></span>
+                <span>Máximo de 6 hóspedes</span>
+              </li>
+              <li class="rules-grid__item">
+                <span class="rules-grid__icon" aria-hidden="true"><svg class="icon"><use href="#icon-check"></use></svg></span>
+                <span>Cuidar dos itens da casa</span>
+              </li>
+            </ul>
           </div>
           <div class="accordion reveal" id="faqAccordion">
             <details open>

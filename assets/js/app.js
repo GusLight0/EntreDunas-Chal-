@@ -182,6 +182,7 @@ window.trapTabWithinContainer = trapTabWithinContainer;
 
 document.addEventListener("DOMContentLoaded", () => {
   setupLoader();
+  setupBookingAlert();
   setupHeader();
   setupHeroSlider();
   setupStayCardGallery();
@@ -203,11 +204,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function setupLoader() {
   const loader = document.getElementById("loader");
   const loaderButton = loader?.querySelector(".loader__cta");
+  let hidden = false;
   const hide = () => {
-    if (!loader) return;
+    if (!loader || hidden) return;
+    hidden = true;
     loader.classList.add("is-hidden");
     loader.setAttribute("aria-hidden", "true");
     loaderButton?.blur();
+    window.dispatchEvent(new CustomEvent("loader:hidden"));
   };
 
   if (new URLSearchParams(window.location.search).has("skipLoader")) {
@@ -225,6 +229,33 @@ function setupLoader() {
     }
   }, { once: true });
   window.setTimeout(hide, 2200);
+}
+
+function setupBookingAlert() {
+  const alertEl = document.getElementById("bookingAlert");
+  const closeButton = document.getElementById("bookingAlertClose");
+  if (!alertEl) return;
+
+  const STORAGE_KEY = "bookingAlertLastShown";
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+  const lastShown = Number(localStorage.getItem(STORAGE_KEY) || 0);
+  if (Date.now() - lastShown < ONE_DAY_MS) return;
+
+  let hideTimeout;
+  const dismiss = () => {
+    alertEl.classList.remove("is-visible");
+    window.clearTimeout(hideTimeout);
+  };
+
+  const show = () => {
+    alertEl.hidden = false;
+    requestAnimationFrame(() => alertEl.classList.add("is-visible"));
+    localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    hideTimeout = window.setTimeout(dismiss, 5000);
+  };
+
+  closeButton?.addEventListener("click", dismiss);
+  window.addEventListener("loader:hidden", show, { once: true });
 }
 
 function setupHeader() {

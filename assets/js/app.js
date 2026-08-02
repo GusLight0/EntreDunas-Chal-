@@ -14,7 +14,7 @@ const CONFIG = {
   // Cada código vale um número fixo em R$ (ex: 40) ou um objeto { percent: 5 } para 5% de desconto.
   discountCodes: {},
   // Só pra exibir a prévia do acréscimo no cartão. O valor cobrado de verdade é
-  // sempre recalculado no servidor (netlify/functions/_lib/pricing.js).
+  // sempre recalculado no servidor (api/_lib/pricing.js).
   cardSurchargePercent: 0.0299,
   cardSurchargeFixed: 0.49
 };
@@ -1464,7 +1464,7 @@ function setupPaymentPage() {
     if (label) label.textContent = "Processando...";
 
     try {
-      const response = await fetch("/.netlify/functions/create-payment-asaas", {
+      const response = await fetch("/api/create-payment-asaas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -567,6 +567,7 @@ button {
 .gallery-page .site-header .nav__brand,
 .gallery-page .site-header:not(.is-scrolled):not(.is-open) .nav__brand {
   color: #18231c;
+  text-shadow: none;
 }
 
 .gallery-header-back {
@@ -1302,7 +1303,8 @@ button {
   margin-bottom: 6px;
 }
 
-.stay-card__heading h3 {
+.stay-card__heading h3,
+.stay-card__heading h1 {
   margin: 0;
   font-size: 1.22rem;
 }
@@ -1974,6 +1976,34 @@ textarea:focus {
   background:
     linear-gradient(180deg, rgba(234, 243, 237, 0.72), transparent 360px),
     var(--surface-soft);
+}
+
+.gallery-intro {
+  display: flex;
+  align-items: center;
+  min-height: clamp(520px, 82svh, 760px);
+  padding: calc(var(--header-height) + 32px) 0 48px;
+  background: linear-gradient(180deg, var(--green-soft) 0%, var(--surface-soft) 100%);
+}
+
+.gallery-intro__inner {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.gallery-intro-card {
+  width: min(480px, 100%);
+}
+
+.gallery-intro-card .stay-card__media {
+  aspect-ratio: 16 / 11;
+}
+
+.gallery-intro-card__lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.55;
 }
 
 .gallery-page .gallery-section--page {
@@ -3457,6 +3487,10 @@ body.profile-open .whatsapp-float {
   .hero__content,
   .hero .scroll-cue {
     display: none;
+  }
+
+  .gallery-intro {
+    min-height: clamp(420px, 84svh, 640px);
   }
 
   main {

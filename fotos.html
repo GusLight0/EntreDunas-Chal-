@@ -96,7 +96,28 @@
     </nav>
 
     <main id="main" class="gallery-page-main">
-      <section class="section gallery-section gallery-section--page section-anchor" id="fotos">
+      <section class="gallery-intro section-anchor" id="fotosIntro">
+        <div class="container gallery-intro__inner">
+          <article class="stay-card gallery-intro-card reveal" aria-label="Entre Dunas Chalé">
+            <div class="stay-card__media">
+              <img class="stay-card__slide is-active" src="assets/img/quintal-varanda.jpeg" alt="Varanda e área externa da Entre Dunas Chalé" width="1600" height="1200" fetchpriority="high">
+            </div>
+            <div class="stay-card__body">
+              <div class="stay-card__heading">
+                <p class="eyebrow">Casa de temporada</p>
+                <h1>Entre Dunas Chalé</h1>
+              </div>
+              <p class="gallery-intro-card__lead">Um chalé amplo e arejado a poucos minutos das dunas, com espaço pra família toda descansar em paz.</p>
+              <button class="button button--primary button--large" type="button" id="showGalleryButton">
+                <span>Ver fotos</span>
+                <svg class="icon"><use href="#icon-camera"></use></svg>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section gallery-section gallery-section--page section-anchor" id="fotos" hidden>
         <div class="container">
           <div class="filter-bar reveal" id="galleryFilters" aria-label="Filtrar fotos">
             <button class="filter-button is-active" type="button" data-filter="Todos">Todos</button>

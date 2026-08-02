@@ -140,6 +140,102 @@ const galleryImages = [
     alt: "Banheiro do quarto da Casa Barreirinhas",
     width: 1200,
     height: 1600
+  },
+  {
+    src: "assets/img/20260728_100654.jpg",
+    title: "Mesa de jantar",
+    category: "Sala",
+    alt: "Mesa de jantar em madeira com seis cadeiras na Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100711.jpg",
+    title: "Corredor interno",
+    category: "Sala",
+    alt: "Corredor interno com acesso aos ambientes da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100721.jpg",
+    title: "Vista da sala de estar",
+    category: "Sala",
+    alt: "Vista da sala de estar a partir da área de jantar",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100731.jpg",
+    title: "Banheiro auxiliar",
+    category: "Banheiros",
+    alt: "Banheiro auxiliar da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100739.jpg",
+    title: "Armário do quarto",
+    category: "Quarto",
+    alt: "Quarto com ar-condicionado e armário na Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100822.jpg",
+    title: "Sala de estar",
+    category: "Sala",
+    alt: "Sala de estar com sofá e iluminação decorativa",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100833.jpg",
+    title: "Sofá da sala de estar",
+    category: "Sala",
+    alt: "Sofá amplo da sala de estar da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100853.jpg",
+    title: "Sala com TV e wi-fi",
+    category: "Sala",
+    alt: "Sala de estar com TV e wi-fi disponíveis",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100930.jpg",
+    title: "Cozinha completa",
+    category: "Sala",
+    alt: "Cozinha completa com fogão, geladeira e mesa de jantar",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_100945.jpg",
+    title: "Fogão e área de preparo",
+    category: "Sala",
+    alt: "Fogão e área de preparo da cozinha da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_104634.jpg",
+    title: "Box do banheiro",
+    category: "Banheiros",
+    alt: "Box do banheiro da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
+  },
+  {
+    src: "assets/img/20260728_104709.jpg",
+    title: "Pia do banheiro",
+    category: "Banheiros",
+    alt: "Pia e espelho do banheiro da Casa Barreirinhas",
+    width: 1200,
+    height: 1600
   }
 ];
 
@@ -189,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupReveal();
   setupButtons();
   setupScrollSpy();
+  setupGalleryIntro();
   setupGallery();
   setupLightbox();
   setupBooking();
@@ -478,6 +575,21 @@ function setupScrollSpy() {
       const targetId = getLinkTarget(link);
       if (targetId) setActive(targetId);
     });
+  });
+}
+
+function setupGalleryIntro() {
+  const intro = document.getElementById("fotosIntro");
+  const gallerySection = document.getElementById("fotos");
+  const showButton = document.getElementById("showGalleryButton");
+  if (!intro || !gallerySection || !showButton) return;
+
+  showButton.addEventListener("click", () => {
+    intro.hidden = true;
+    gallerySection.hidden = false;
+    gallerySection.querySelectorAll(".reveal").forEach((element) => element.classList.add("is-visible"));
+    gallerySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    gallerySection.querySelector(".filter-button")?.focus();
   });
 }
 
